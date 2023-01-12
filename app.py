@@ -4,9 +4,10 @@ import requests
 
 from models import db, connect_db
 from config_info import ACCESS_TOKEN, SECRET_KEY
-# from forms import NewSongForPlaylistForm, SongForm, PlaylistForm
 
+# create the app
 app = Flask(__name__)
+# configure the postgresql database, relative to the app instance folder
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///furmily_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
@@ -27,4 +28,5 @@ debug = DebugToolbarExtension(app)
 @app.route("/")
 def root():
     """Homepage"""
+    return "hello"
 
