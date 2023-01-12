@@ -1,2 +1,3 @@
 venv/
 secrets.py
+config_info.py

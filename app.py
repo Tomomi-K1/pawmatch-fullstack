@@ -1,8 +1,9 @@
-from flask import Flask, redirect, render_template
+from flask import Flask, redirect, render_template_string, request
 from flask_debugtoolbar import DebugToolbarExtension
+import requests
 
 from models import db, connect_db
-from secrets import ACCESS_TOKEN
+from config_info import ACCESS_TOKEN, SECRET_KEY
 # from forms import NewSongForPlaylistForm, SongForm, PlaylistForm
 
 app = Flask(__name__)
@@ -13,7 +14,7 @@ app.config['SQLALCHEMY_ECHO'] = True
 connect_db(app)
 db.create_all()
 
-app.config['SECRET_KEY'] = "I'LL NEVER TELL!!"
+app.config['SECRET_KEY'] = SECRET_KEY
 
 # Having the Debug Toolbar show redirects explicitly is often useful;
 # however, if you want to turn it off, you can uncomment this line:
@@ -25,6 +26,5 @@ debug = DebugToolbarExtension(app)
 
 @app.route("/")
 def root():
-    """Homepage: redirect to /playlists."""
+    """Homepage"""
 
-    return redirect("/playlists")
