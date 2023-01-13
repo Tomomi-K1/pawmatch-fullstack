@@ -1,6 +1,6 @@
-from flask import Flask, redirect, render_template_string, request
+from flask import Flask, redirect, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
-import requests
+
 
 from models import db, connect_db
 from config_info import ACCESS_TOKEN, SECRET_KEY
@@ -28,5 +28,7 @@ debug = DebugToolbarExtension(app)
 @app.route("/")
 def root():
     """Homepage"""
-    return "hello"
+ 
+
+    return render_template('base.html')
 

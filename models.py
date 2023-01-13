@@ -1,10 +1,19 @@
-"""Models for Playlist app."""
+"""Models for Furmily app."""
 
+from datetime import datetime
+# import SQLAlchemy
 from flask_sqlalchemy import SQLAlchemy
+# import bycript
+from flask_bcrypt import Bcrypt
+
+# create bycrypt instance
+bcrypt = Bcrypt()
 
 # create the extension
 db = SQLAlchemy()
 
+# ========================== function to run database ================================#
+# this function is imported and used in app.py file
 def connect_db(app):
     """Connect to database."""
 
@@ -12,13 +21,16 @@ def connect_db(app):
     # initialize the app with the extension
     db.init_app(app)
 
+# =================================== USER class ====================================#
+
 class User(db.Model):
 
     __tablename__ = 'users'
 
     id = db.Column(
         db.Integer,
-        primary_key=True
+        primary_key=True,
+        autoincrement=True
     )
 
     username = db.Column(
@@ -39,7 +51,7 @@ class User(db.Model):
     )
 
     def __repr__(self):
-        return f"<User #{self.id}: {self.username}>"
+        return f'<User #{self.id}: {self.username}>'
 
     @classmethod
     def signup(cls, username, email, password):
@@ -79,14 +91,23 @@ class User(db.Model):
 
         return False
 
-class Preference(db.Model):
+# =================================== USER Preference class ====================================#
+
+class UserPreference(db.Model):
 
     __tablename__ = 'user_preference'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
 
     user_id =db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='cascade'),
-        nullable = False
+        nullable = False,
+        primary_key=True
     )
 
     pet_type = db.Column(
@@ -125,14 +146,23 @@ class Preference(db.Model):
         db.Integer
     )
 
+# =================================== Favorite Pet class ====================================#
+
 class FavoritePet(db.Model):
 
-    __tablename__ ="favorite_pets"
+    __tablename__ ='favorite_pets'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
 
     user_id =db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='cascade'),
-        nullable = False
+        nullable = False,
+        primary_key=True
     ) 
 
     pet_id = db.Column(
@@ -140,15 +170,22 @@ class FavoritePet(db.Model):
         nullable=False
     )
 
-        
+# =================================== Maybe Pet class ====================================#        
 class MaybePet(db.Model):
 
-    __tablename__ ="maybe_pets"
+    __tablename__ ='maybe_pets'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
 
     user_id =db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='cascade'),
-        nullable=False
+        nullable=False,
+        primary_key=True
     )    
 
     pet_id = db.Column(
@@ -156,9 +193,16 @@ class MaybePet(db.Model):
         nullable=False
     )
 
+# =================================== Favorite Organization class ====================================#
 class FavoriteOrg(db.Model):
 
-    __tablename__ ="favorite_orgs"
+    __tablename__ ='favorite_orgs'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
 
     user_id =db.Column(
         db.Integer,
@@ -171,10 +215,17 @@ class FavoriteOrg(db.Model):
         nullable=False
     )
 
+# =================================== Comments class ====================================#
 
 class Comment(db.Model):
 
-    __tablename__ ="comments"
+    __tablename__ ='comments'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
 
     user_id =db.Column(
         db.Integer,
