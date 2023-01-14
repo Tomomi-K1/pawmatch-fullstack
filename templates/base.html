@@ -4,7 +4,7 @@
 <head>
 
   <meta charset="UTF-8">
-  <title>Paw Match</title>
+  <title>Paw Match{% block title %}{% endblock %}</title>
 
   <!------------------ Boostrap --------------------------->
   <link rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
@@ -31,7 +31,7 @@
 <!-- main content area =====this information switches-->
 <div class="container">
 
-    <h1> {{num}} pets need a new home</h1>
+    <!-- <h1> {{num}} pets need a new home</h1> -->
     {% block content %}
     {% endblock %}
 </div>

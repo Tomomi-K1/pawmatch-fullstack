@@ -34,7 +34,7 @@ class User(db.Model):
     )
 
     username = db.Column(
-        db.String(15),
+        db.String(20),
         nullable=False,
         unique=True,
     )
@@ -169,6 +169,10 @@ class FavoritePet(db.Model):
         db.Integer,
         nullable=False
     )
+
+    # datetime = db.Column(
+        
+    # )
 
 # =================================== Maybe Pet class ====================================#        
 class MaybePet(db.Model):

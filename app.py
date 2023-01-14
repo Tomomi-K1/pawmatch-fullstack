@@ -4,6 +4,7 @@ import requests
 
 
 from models import db, connect_db
+from forms import Signup, Login, UserPreference, Comment
 from config_info import API_KEY,API_SECRET, SECRET_KEY
 
 # create the app
@@ -45,5 +46,19 @@ def root():
     # res = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'status': 'adoptable'})
     # data=res.json()
     # num =len(data['animals'])
-    return render_template('base.html', num = num)
+    return render_template('base.html')
+
+@app.route("/signup")
+def signup():
+    """user signup page"""
+    form = Signup()
+    return render_template('signup.html', form=form)
+
+@app.route("/login")
+def login():
+    """user login page"""
+    form = Login()
+    return render_template('login.html', form=form)
+
+
 
