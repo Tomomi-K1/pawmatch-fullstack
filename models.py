@@ -111,7 +111,8 @@ class UserPreference(db.Model):
     )
 
     pet_type = db.Column(
-        db.Text
+        db.Text,
+        nullable=False
     )
 
     breed = db.Column(

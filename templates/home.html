@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{# ======= title ======== #}
+{% block title %} | Home {% endblock %}
+
+{# ======= body class name ======== #}
+{% block body_class %}home{% endblock %}
+
+{# ======= main content area ======== #}
+{% block content %}
+    <h1>Let's find you a new Furmily member!</h1>
+    <form action="/questions">
+        <button class="btn btn-warning"> Yes, I'm Ready! </button>
+    </form>
+    <!-- <h1> {{num}} pets need a new home</h1> -->
+{% endblock %}

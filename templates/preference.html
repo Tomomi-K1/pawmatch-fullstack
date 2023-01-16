@@ -1,27 +1,27 @@
 {% extends 'base.html' %}
 
 {# ======= title ======== #}
-{% block title %} | Sign Up {% endblock %}
+{% block title %} | Preference {% endblock %}
 
 {# ======= body class name ======== #}
-{% block body_class %}signup{% endblock %}
+{% block body_class %}preference{% endblock %}
 
 {# ======= main content area ======== #}
 {% block content %}
 <div class="row justify-content-md-center">
     <div class="col-md-7 col-lg-5">
-      <h2 class="join-message">Be a Part of Our Furmily Today!</h2>
+      <h2 class="join-message">Become Our Furmily Today!</h2>
       <form method="POST" id="signup_form">
         {{ form.hidden_tag() }}
   
         {% for field in form if field.widget.input_type != 'hidden' %}
-        <!-- even though I applied from-group margin bottom was not applied why? I tried adding m-b-1 which means margin bottom -->
+        <!-- even though I applied from-group margin bottom was not applied why? I tried adding m-b-1 which means margin bottom  -->
         <div class="form-group">
-          {{field.label}}
-          {{ field(placeholder=field.label.text, class="form-control") }}
           {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span>
           {% endfor %}
+          {{field.label}}
+          {{ field(placeholder=field.label.text, class="form-control") }}
         </div>
         {% endfor %}
   
