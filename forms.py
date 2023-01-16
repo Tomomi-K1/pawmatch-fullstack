@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, BooleanField, SelectField, IntegerField
+from wtforms import StringField, PasswordField, TextAreaField, BooleanField, SelectField, IntegerField, RadioField
 from wtforms.validators import DataRequired, Email, Length
 
 class SignupForm(FlaskForm):
@@ -12,15 +12,15 @@ class LoginForm(FlaskForm):
     password =PasswordField('Password', validators=[DataRequired(), Length(min=6)])
 
 class UserPreferenceForm(FlaskForm):
-    pet_type = SelectField('Type of Pet', choices=['Dog', 'Cat', 'Rabbit', 'Small & Furry', 'Horse', 'Bird', 'Scales, Fins & Other', 'Barnyard'])
+    pet_type = RadioField('Type of Pet')
     # breed = SelectField('Breed')
-    # size = SelectField('Size')
-    # gender = SelectField('Gender')
-    # age = SelectField('Age')
-    # good_with_children = BooleanField('Good with Children')
-    # house_trained = BooleanField('House trained')
-    # special_need = BooleanField('Special need')
-    # zipcode = IntegerField('Zipcode', validators=[DataRequired()])
+    size = RadioField('Size', choices=[('sm','small'), ('md','medium'), ('lg','large'), ('xlg','xlarge')])
+    gender = RadioField('Gender',choices=[('m','male'), ('f','female'), ('u','unknown')])
+    age = RadioField('Age', choices=[('baby','baby'), ('young','young'), ('adult','adult'), ('senior','senior')])
+    good_with_children = BooleanField('Good with Children')
+    house_trained = BooleanField('House trained')
+    special_need = BooleanField('Special need')
+    zipcode = IntegerField('Zipcode', validators=[DataRequired()])
 
 class CommentForm(FlaskForm):
     comment = TextAreaField('Comment')

@@ -161,10 +161,10 @@ def show_questions():
 
     form = UserPreferenceForm()
 
-    # res = requests.get(f'{API_BASE_URL}/types', headers=headers)
-    # data = res.json()
-    # pet_types =[item['name'] for item in data['types']]
-    # form.pet_type.choices = pet_types
+    res = requests.get(f'{API_BASE_URL}/types', headers=headers)
+    data = res.json()
+    pet_types =[(item['name'], item['name']) for item in data['types']]
+    form.pet_type.choices = pet_types
 
     return render_template('questions.html', form=form)
 
