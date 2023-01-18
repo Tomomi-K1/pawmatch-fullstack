@@ -20,6 +20,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
+
 # db.create_all()
 
 
@@ -156,7 +157,7 @@ def user_page(user_id):
 
     return render_template('user_profile.html', user=user)
 
-@app.route('/questions')
+@app.route('/questions', methods=["GET", "POST"])
 def show_questions():
 
     form = UserPreferenceForm()
@@ -165,6 +166,25 @@ def show_questions():
     data = res.json()
     pet_types =[(item['name'], item['name']) for item in data['types']]
     form.pet_type.choices = pet_types
+
+    if form.validate_on_submit():
+
+        # if user not logged in, how do I do this?
+        user_pref = UserPreference(
+        user_id = g.user.id 
+        pet_type = form.pet_type.data
+        size = form.size.data
+        gender = form.gender.data
+        age = form.age.data
+        good_with_children = form.good_with_children.data
+        house_trained = form.house_trained.data
+        special_need = form.special_need.data
+        zipcode = form.zipcode.data
+        )
+
+
+
+        return render_template('/your_matches.html')
 
     return render_template('questions.html', form=form)
 

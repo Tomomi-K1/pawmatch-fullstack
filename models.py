@@ -115,9 +115,9 @@ class UserPreference(db.Model):
         nullable=False
     )
 
-    breed = db.Column(
-        db.Text
-    )
+    # breed = db.Column(
+    #     db.Text
+    # )
 
     size = db.Column(
         db.Text
