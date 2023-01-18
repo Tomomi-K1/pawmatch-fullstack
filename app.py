@@ -168,10 +168,7 @@ def show_questions():
     form.pet_type.choices = pet_types
 
     if form.validate_on_submit():
-
         # if user not logged in, how do I do this?
-        user_pref = UserPreference(
-        user_id = g.user.id 
         pet_type = form.pet_type.data
         size = form.size.data
         gender = form.gender.data
@@ -180,11 +177,13 @@ def show_questions():
         house_trained = form.house_trained.data
         special_need = form.special_need.data
         zipcode = form.zipcode.data
-        )
+    
 
+        response = requests.get(f'{API_BASE_URL}/types', headers=headers, params={'type': pet_type, 'size': size, 'gender': gender, 'age': age, 'good_with_children': good_with_children, 'house_trained':house_trained, 'special_needs':special_need, 'zipcode': zipcode})
+        data = response.json()
+        raise
 
-
-        return render_template('/your_matches.html')
+    #     return render_template('/your_matches.html' )
 
     return render_template('questions.html', form=form)
 
