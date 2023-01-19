@@ -169,25 +169,34 @@ def show_questions():
 
     if form.validate_on_submit():
         # if user not logged in, how do I do this?
+        # raise
+        user_id = g.user.id
         pet_type = form.pet_type.data
         size = form.size.data
         gender = form.gender.data
         age = form.age.data
-        good_with_children = form.good_with_children.data
-        house_trained = form.house_trained.data
-        special_need = form.special_need.data
+        good_with_children = 'true' if form.good_with_children.data == True else 'false'
+        house_trained = 'true' if form.house_trained.data == True else 'false'
+        special_need = 'true' if form.special_need.data == True else 'false'
         zipcode = form.zipcode.data
-    
 
-        response = requests.get(f'{API_BASE_URL}/types', headers=headers, params={'type': pet_type, 'size': size, 'gender': gender, 'age': age, 'good_with_children': good_with_children, 'house_trained':house_trained, 'special_needs':special_need, 'zipcode': zipcode})
-        data = response.json()
-        raise
+        response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': pet_type, 'size': size, 'gender': gender, 'age': age, 'good_with_children': good_with_children, 'house_trained':house_trained, 'special_needs':special_need, 'location': zipcode, 'limit': 100})
+        match_data = response.json()
 
-    #     return render_template('/your_matches.html' )
+        if len(match_data['animals']) == 0 :
+            flash('No Match Found, Try Again')
+            return redirect('/questions')
+        elif len(match_data['animals']) > 10:
+            ten_data= XXX # ten_data= randomly choose 10 from the list and make new list
+            return render_template('match_result.html', data=ten_data)            
+        
+        return render_template('match_result.html', data=match_data)
 
     return render_template('questions.html', form=form)
 
     """show questions to get users preference"""
+
+
 
 
 

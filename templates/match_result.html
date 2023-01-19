@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{# ======= title ======== #}
+{% block title %} | Match Result {% endblock %}
+
+{# ======= body class name ======== #}
+{% block body_class %}match_result{% endblock %}
+
+{# ======= main content area ======== #}
+{% block content %}
+ {{data}}
+    
+{% endblock %}
