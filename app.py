@@ -1,7 +1,7 @@
 from flask import Flask, redirect, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
-import requests
+import requests, random
 
 from models import db, connect_db, User, UserPreference, FavoritePet, MaybePet, FavoriteOrg, Comment
 from forms import SignupForm, LoginForm, UserPreferenceForm, CommentForm
@@ -169,28 +169,34 @@ def show_questions():
 
     if form.validate_on_submit():
         # if user not logged in, how do I do this?
-        # raise
-        user_id = g.user.id
-        pet_type = form.pet_type.data
-        size = form.size.data
-        gender = form.gender.data
-        age = form.age.data
-        good_with_children = 'true' if form.good_with_children.data == True else 'false'
-        house_trained = 'true' if form.house_trained.data == True else 'false'
-        special_need = 'true' if form.special_need.data == True else 'false'
-        zipcode = form.zipcode.data
+        user_pref = UserPreference(# raise
+        user_id = g.user.id,
+        pet_type = form.pet_type.data,
+        size = form.size.data,
+        gender = form.gender.data,
+        age = form.age.data,
+        # good_with_children = 'true' if form.good_with_children.data == True else 'false',
+        # house_trained = 'true' if form.house_trained.data == True else 'false',
+        # special_need = 'true' if form.special_need.data == True else 'false',
+        zipcode = form.zipcode.data)
 
-        response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': pet_type, 'size': size, 'gender': gender, 'age': age, 'good_with_children': good_with_children, 'house_trained':house_trained, 'special_needs':special_need, 'location': zipcode, 'limit': 100})
+        
+        db.session.add(user_pref)
+        db.session.commit()
+
+        response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': user_pref.pet_type, 'size': user_pref.size, 'gender': user_pref.gender, 'age': user_pref.age, 'location': user_pref.zipcode, 'limit': 100, 'status': 'adoptable'})
         match_data = response.json()
 
+        # match_data =user_pref.show_matches
+
         if len(match_data['animals']) == 0 :
-            flash('No Match Found, Try Again')
+            flash('No Match Found. Please Try Again.', 'danger')
             return redirect('/questions')
         elif len(match_data['animals']) > 10:
-            ten_data= XXX # ten_data= randomly choose 10 from the list and make new list
-            return render_template('match_result.html', data=ten_data)            
+            match_data= random.sample(match_data['animals'], 10) # randomly choose 10 from the list and make new list
+            return render_template('match_result.html', data=match_data)            
         
-        return render_template('match_result.html', data=match_data)
+        return render_template('match_result.html', data=match_data['animals'])
 
     return render_template('questions.html', form=form)
 

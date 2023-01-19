@@ -8,6 +8,15 @@
 
 {# ======= main content area ======== #}
 {% block content %}
- {{data}}
+{% for animal in data %} 
+<h1>{{animal['name']}}</h1>
+    <div class="img">
+    <h3>Like</h3>
+    {% for photo in animal['photos'] %}
+    <img src="{{photo['large']}}" alt="{{animal['species']}}">
+    {% endfor %}
+    </div>
+{% endfor %}
+
     
 {% endblock %}

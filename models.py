@@ -131,21 +131,27 @@ class UserPreference(db.Model):
         db.Text
     )
 
-    good_with_children = db.Column(
-        db.Boolean
-    )
+    # good_with_children = db.Column(
+    #     db.Text
+    # )
 
-    house_trained = db.Column(
-        db.Boolean
-    )
+    # house_trained = db.Column(
+    #     db.Text
+    # )
 
-    special_need = db.Column(
-        db.Boolean
-    )
+    # special_need = db.Column(
+    #     db.Text
+    # )
 
     zipcode = db.Column(
         db.Integer
     )
+
+    # def show_matches(user_id, pet_type, size, gender, age, good_with_children, house_trained, special_need, zipcode):
+    #     response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': pet_type, 'size': size, 'gender': gender, 'age': age, 'good_with_children': good_with_children, 'house_trained':house_trained, 'special_needs':special_need, 'location': zipcode, 'limit': 100, 'status': 'adoptable'})
+    #     match_data = response.json()
+    #     return match_data
+
 
 # =================================== Favorite Pet class ====================================#
 

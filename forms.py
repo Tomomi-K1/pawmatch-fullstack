@@ -17,9 +17,9 @@ class UserPreferenceForm(FlaskForm):
     size = RadioField('Size', choices=[('small','small'), ('medium','medium'), ('large','large'), ('xlarge','xlarge')])
     gender = RadioField('Gender',choices=[('male','male'), ('female','female'), ('unknown','unknown')])
     age = RadioField('Age', choices=[('baby','baby'), ('young','young'), ('adult','adult'), ('senior','senior')])
-    good_with_children = BooleanField('Good with Children', default =False)
-    house_trained = BooleanField('House trained', default =False)
-    special_need = BooleanField('Special need', default =False)
+    # good_with_children = BooleanField('Good with Children', default =False)
+    # house_trained = BooleanField('House trained', default =False)
+    # special_need = BooleanField('Special need', default =False)
     zipcode = IntegerField('Zipcode', validators=[DataRequired()])
 
 class CommentForm(FlaskForm):
