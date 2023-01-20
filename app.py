@@ -2,6 +2,7 @@ from flask import Flask, redirect, render_template, request, flash, redirect, se
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests, random
+from datetime import datetime
 
 from models import db, connect_db, User, UserPreference, FavoritePet, MaybePet, FavoriteOrg, Comment
 from forms import SignupForm, LoginForm, UserPreferenceForm, CommentForm
@@ -25,8 +26,10 @@ connect_db(app)
 
 
 # ============ API call requirements ======================#
+# ACCESS_TIME = '0'
 def get_token():
     res = requests.post('https://api.petfinder.com/v2/oauth2/token', data={'grant_type':'client_credentials', 'client_id': API_KEY, 'client_secret': API_SECRET})
+    # ACCESS_TIME = datetime.now()
     data=res.json()
     return data['access_token']
 

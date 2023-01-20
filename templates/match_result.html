@@ -8,15 +8,42 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-{% for animal in data %} 
-<h1>{{animal['name']}}</h1>
-    <div class="img">
-    <h3>Like</h3>
-    {% for photo in animal['photos'] %}
-    <img src="{{photo['large']}}" alt="{{animal['species']}}">
-    {% endfor %}
+<div class="match-display-area">
+    {% for animal in data %} 
+    <div class="matched-pet">
+    <h1>{{animal['name']}}</h1>
+        <div class="img">
+        <h3>Like</h3>
+        <!-- {% for photo in animal['photos'] %}
+        <img src="{{photo['large']}}" alt="{{animal['species']}}">
+        {% endfor %} -->
+        {% if animal['photos'] %}
+        <img src="{{animal['photos'][0]['large']}}" class="img-thumbnail img-fluid" alt="{{animal['species']}}">
+            {% else %}
+        <img src="default.jpg" alt="no picture">
+        {% endif %}   
+        </div>
+        <div class="description">
+            <h3>About {{animal['name']}}</h3>
+            <br>
+            <p>{{animal['type']}} {{animal['breed']}} {{animal['age']}} {{animal['gender']}} {{animal['size']}}</p>
+            <br>
+            <p>{{animal['description']}}</p>
+            <p>Location: {{animal['contact']['city']}}, {{animal['contact']['state']}}</p>
+            <p><a href="{{animal['_links']['organization']}}">Organization</a></p>   
+            <form action="/likes">
+                <h3>Do you want to adopt {{animal['name']}}?</h3>
+                <button class="favorite">I want to adopt {{animal['name']}}!</buttton>
+                <button class="maybe"> Nore sure, Maybe?</buttton>
+                <button class="no"> No </buttton>
+
+            </form>
+            <button class="nextbtn"></button>
+        </div>
     </div>
-{% endfor %}
+    {% endfor %}
+</div>
+
 
     
 {% endblock %}
