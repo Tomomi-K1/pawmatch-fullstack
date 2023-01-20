@@ -59,6 +59,15 @@
 
 <!-- main content area =====this information switches-->
 <div class="container main-area">
+  <div class="loader hidden">
+      <div class="one"></div>
+      <div class="two"></div>
+      <div class="three"></div>
+      <div class="four"></div>
+      <div class="five"></div>
+      <div class="six"></div>
+  </div>
+  
   {% for category, message in get_flashed_messages(with_categories=True) %}
   <div class="alert alert-{{ category }}">{{ message }}</div>
   {% endfor %}

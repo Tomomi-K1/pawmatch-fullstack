@@ -9,37 +9,38 @@
 {# ======= main content area ======== #}
 {% block content %}
 <div class="match-display-area">
-    {% for animal in data %} 
-    <div class="matched-pet">
-    <h1>{{animal['name']}}</h1>
+    {% for animal in data %}
+    <div class="card">
+    <div class="matched-pet card-body">
+    <h1 class="card-title">{{animal['name']}}</h1>
         <div class="img">
-        <h3>Like</h3>
+        <!-- <h3>Like</h3> -->
         <!-- {% for photo in animal['photos'] %}
         <img src="{{photo['large']}}" alt="{{animal['species']}}">
         {% endfor %} -->
         {% if animal['photos'] %}
-        <img src="{{animal['photos'][0]['large']}}" class="img-thumbnail img-fluid" alt="{{animal['species']}}">
+        <img src="{{animal['photos'][0]['large']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
             {% else %}
         <img src="default.jpg" alt="no picture">
         {% endif %}   
         </div>
         <div class="description">
             <h3>About {{animal['name']}}</h3>
-            <br>
             <p>{{animal['type']}} {{animal['breed']}} {{animal['age']}} {{animal['gender']}} {{animal['size']}}</p>
             <br>
-            <p>{{animal['description']}}</p>
-            <p>Location: {{animal['contact']['city']}}, {{animal['contact']['state']}}</p>
+            <p>Description: {{animal['description']}}</p>
+            <p>Location: {{animal['contact']['address']['city']}}, {{animal['contact']['address']['state']}}</p>
             <p><a href="{{animal['_links']['organization']}}">Organization</a></p>   
-            <form action="/likes">
+            <form action="/likes" class="form-group">
                 <h3>Do you want to adopt {{animal['name']}}?</h3>
-                <button class="favorite">I want to adopt {{animal['name']}}!</buttton>
-                <button class="maybe"> Nore sure, Maybe?</buttton>
-                <button class="no"> No </buttton>
+                <button class="favorite btn btn-warning">I want to adopt {{animal['name']}}!</buttton>
+                <button class="maybe btn btn-success mr-1 ml-1"> Nore sure, Maybe?</buttton>
+                <button class="no btn btn-light"> No </buttton>
 
             </form>
-            <button class="nextbtn"></button>
+            <!-- <button class="nextbtn"></button> -->
         </div>
+    </div>
     </div>
     {% endfor %}
 </div>
