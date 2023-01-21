@@ -15,9 +15,10 @@ const $formUserLikes = $('.form-user-likes')
 
 $formUserLikes.on('click', 'button', function(e){
     e.preventDefault();
+    response =axios({method: 'post', url:'/likes', data:{animal: e.target.dataset.animal}})
     // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
     //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
-    console.log(e.target.className);
+    console.log(response)
 
 })
 

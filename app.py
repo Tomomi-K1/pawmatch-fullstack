@@ -221,11 +221,15 @@ def show_questions():
 
     return render_template('questions.html', form=form)
 
-    """show questions to get users preference"""
+@app.route('/likes', methods=['POST'])
+def add_fav():
+    favPet = FavoritePet(
+    pet_id = request.get('animal'),
+    user_id = g.user.id)
 
+    db.session.add(favPet)
+    db.session.commit()
 
-
-
-
-
-
+    return f'added pet:{pet_id} to user id: {user_id} fav'
+    
+    
