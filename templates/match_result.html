@@ -33,14 +33,10 @@
             <p><a href="{{animal['_links']['organization']}}">Organization</a></p>   
             
             <h3>Do you want to adopt {{animal['name']}}?</h3>
-            <form action="/likes" class="form-group">
-                <button class="favorite btn btn-warning data-{{animal['id']}}">I want to adopt {{animal['name']}}!</buttton>
-            </form>
-            <form action="/maybe" class="form-group">
-                <button class="maybe btn btn-success data-{{animal['id']}}"> Nore sure, Maybe?</buttton>
-            </form>
-            <form action="no" class="form-group">    
-                    <button class="no btn btn-light data-{{animal['id']}}"> No </buttton>
+            <form action="/likes" class="form-group form-user-likes">
+                <button class="favorite btn btn-warning" data-animal="{{animal['id']}}">I want to adopt {{animal['name']}}!</buttton>
+                <button class="maybe btn btn-success" data-animal="{{animal['id']}}"> Nore sure, Maybe?</buttton>
+                <button class="no btn btn-light" data-animal="{{animal['id']}}"> No </buttton>
             </form>
             <!-- <button class="nextbtn"></button> -->
         </div>

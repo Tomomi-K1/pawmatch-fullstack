@@ -203,13 +203,11 @@ def show_questions():
 
         response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': user_pref.pet_type, 'size': user_pref.size, 'gender': user_pref.gender, 'age': user_pref.age, 'location': user_pref.zipcode, 'limit': 100, 'status': 'adoptable'})
         match_data = response.json()
-        list_of_animals = match_data['animal']
+        list_of_animals = match_data['animals']
 
         for animal in list_of_animals:
             if len(animal['photos']) ==0:
                 list_of_animals.remove(animal)
-            
-            return list_of_animals
         
         # match_data =user_pref.show_matches
         if len(list_of_animals) == 0 :
