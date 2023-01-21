@@ -3,6 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests, random
 from datetime import datetime
+import threading
 
 from models import db, connect_db, User, UserPreference, FavoritePet, MaybePet, FavoriteOrg, Comment
 from forms import SignupForm, LoginForm, UserPreferenceForm, CommentForm
@@ -26,14 +27,26 @@ connect_db(app)
 
 
 # ============ API call requirements ======================#
+# from stackoverflow https://stackoverflow.com/questions/2697039/python-equivalent-of-setinterval
+
 # ACCESS_TIME = '0'
+# ACCESS_TOKEN =''
+
+# def setInterval(func,time):
+#     e = threading.Event()
+#     while not e.wait(time):
+#         func()
+
 def get_token():
     res = requests.post('https://api.petfinder.com/v2/oauth2/token', data={'grant_type':'client_credentials', 'client_id': API_KEY, 'client_secret': API_SECRET})
     # ACCESS_TIME = datetime.now()
     data=res.json()
+    # ACCESS_TOKEN = data['access_token']
     return data['access_token']
 
 ACCESS_TOKEN = get_token()
+
+# setInterval(get_token,3600)
 # option1 - maybe I can get datestamp when I get access token. Then if(ACCESS_TOKEN), check datetime to see if it's past 3600 seconds. if so, we need to get new token.
 
 # option2 - petfinder API wrapper for login support :https://github.com/aschleg/petpy
@@ -172,6 +185,7 @@ def show_questions():
 
     if form.validate_on_submit():
         # if user not logged in, how do I do this?
+        
         user_pref = UserPreference(# raise
         user_id = g.user.id,
         pet_type = form.pet_type.data,
@@ -189,17 +203,23 @@ def show_questions():
 
         response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': user_pref.pet_type, 'size': user_pref.size, 'gender': user_pref.gender, 'age': user_pref.age, 'location': user_pref.zipcode, 'limit': 100, 'status': 'adoptable'})
         match_data = response.json()
+        list_of_animals = match_data['animal']
 
+        for animal in list_of_animals:
+            if len(animal['photos']) ==0:
+                list_of_animals.remove(animal)
+            
+            return list_of_animals
+        
         # match_data =user_pref.show_matches
-
-        if len(match_data['animals']) == 0 :
+        if len(list_of_animals) == 0 :
             flash('No Match Found. Please Try Again.', 'danger')
             return redirect('/questions')
-        elif len(match_data['animals']) > 10:
-            match_data= random.sample(match_data['animals'], 10) # randomly choose 10 from the list and make new list
-            return render_template('match_result.html', data=match_data)            
+        elif len(list_of_animals) > 10:
+            list_of_animals= random.sample(list_of_animals, 10) # randomly choose 10 from the list and make new list
+            return render_template('match_result.html', list_of_animals=list_of_animals)            
         
-        return render_template('match_result.html', data=match_data['animals'])
+        return render_template('match_result.html', list_of_animals=list_of_animals)
 
     return render_template('questions.html', form=form)
 

@@ -9,8 +9,8 @@
 {# ======= main content area ======== #}
 {% block content %}
 <div class="match-display-area">
-    {% for animal in data %}
-    <div class="card">
+    {% for animal in list_of_animals %}
+    <div class="card data-{{animal['id']}}">
     <div class="matched-pet card-body">
     <h1 class="card-title">{{animal['name']}}</h1>
         <div class="img">
@@ -31,12 +31,16 @@
             <p>Description: {{animal['description']}}</p>
             <p>Location: {{animal['contact']['address']['city']}}, {{animal['contact']['address']['state']}}</p>
             <p><a href="{{animal['_links']['organization']}}">Organization</a></p>   
+            
+            <h3>Do you want to adopt {{animal['name']}}?</h3>
             <form action="/likes" class="form-group">
-                <h3>Do you want to adopt {{animal['name']}}?</h3>
-                <button class="favorite btn btn-warning">I want to adopt {{animal['name']}}!</buttton>
-                <button class="maybe btn btn-success mr-1 ml-1"> Nore sure, Maybe?</buttton>
-                <button class="no btn btn-light"> No </buttton>
-
+                <button class="favorite btn btn-warning data-{{animal['id']}}">I want to adopt {{animal['name']}}!</buttton>
+            </form>
+            <form action="/maybe" class="form-group">
+                <button class="maybe btn btn-success data-{{animal['id']}}"> Nore sure, Maybe?</buttton>
+            </form>
+            <form action="no" class="form-group">    
+                    <button class="no btn btn-light data-{{animal['id']}}"> No </buttton>
             </form>
             <!-- <button class="nextbtn"></button> -->
         </div>
