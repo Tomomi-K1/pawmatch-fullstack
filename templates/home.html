@@ -9,8 +9,16 @@
 {# ======= main content area ======== #}
 {% block content %}
     <h1>Let's find you a new Furmily member!</h1>
-    <form action="/questions">
-        <button class="ready-btn btn btn-warning"> Yes, I'm Ready! </button>
+    <form action="/signup">
+        <button class="ready-btn btn btn-warning"> Yes, I'm Ready! Sign Me Up! </button>
     </form>
+
+    <form action="/login">
+        <button class="ready-btn btn btn-warning"> I'm a Member already. Log me In!</button>
+    </form>
+
+    <!-- <form action="/questions">
+        <button class="ready-btn btn btn-warning"> Yes, I'm Ready! Sign Me Up! </button>
+    </form> -->
     <!-- <h1> {{num}} pets need a new home</h1> -->
 {% endblock %}

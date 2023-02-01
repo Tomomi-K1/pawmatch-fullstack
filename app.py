@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 import requests, random
 from datetime import datetime
 import threading
+from flask_cors import CORS
 
 from models import db, connect_db, User, UserPreference, FavoritePet, MaybePet, FavoriteOrg, Comment
 from forms import SignupForm, LoginForm, UserPreferenceForm, CommentForm
@@ -11,6 +12,7 @@ from config_info import API_KEY,API_SECRET, SECRET_KEY
 
 # create the app
 app = Flask(__name__)
+CORS(app)
 
 # configure the postgresql database, relative to the app instance folder
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -112,7 +114,7 @@ def signup():
 
         do_login(user)
 
-        return redirect('/home')
+        return redirect('/questions')
 
     else:
         return render_template('signup.html', form=form)
@@ -132,7 +134,7 @@ def login():
 
         if user:
             do_login(user)
-            return redirect("/home")
+            return redirect("/questions")
         else:
             flash("Invalid credentials.", 'danger')
 
