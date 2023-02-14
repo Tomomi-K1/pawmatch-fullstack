@@ -1,4 +1,6 @@
 from flask import Flask, redirect, render_template, request, flash, redirect, session, g
+import flask
+import json
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests, random
@@ -164,6 +166,9 @@ def home():
     # res = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'status': 'adoptable'})
     # data=res.json()
     # num =len(data['animals'])
+    if g.user:
+        return redirect('/questions')
+    
     return render_template('home.html')
 
 
@@ -180,10 +185,10 @@ def show_questions():
 
     form = UserPreferenceForm()
 
-    res = requests.get(f'{API_BASE_URL}/types', headers=headers)
-    data = res.json()
-    pet_types =[(item['name'], item['name']) for item in data['types']]
-    form.pet_type.choices = pet_types
+    # res = requests.get(f'{API_BASE_URL}/types', headers=headers)
+    # data = res.json()
+    # pet_types =[(item['name'], item['name']) for item in data['types']]
+    # form.pet_type.choices = pet_types
 
     if form.validate_on_submit():
         # if user not logged in, how do I do this?
@@ -203,7 +208,7 @@ def show_questions():
         db.session.add(user_pref)
         db.session.commit()
 
-        response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': user_pref.pet_type, 'size': user_pref.size, 'gender': user_pref.gender, 'age': user_pref.age, 'location': user_pref.zipcode, 'limit': 100, 'status': 'adoptable'})
+        response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': user_pref.pet_type, 'size': user_pref.size, 'gender': user_pref.gender, 'age': user_pref.age, 'location': user_pref.zipcode, 'limit': 50, 'status': 'adoptable'})
         match_data = response.json()
         list_of_animals = match_data['animals']
 
@@ -225,13 +230,38 @@ def show_questions():
 
 @app.route('/likes', methods=['POST'])
 def add_fav():
+    received_data=request.get_json()
+    print(f"received_data{received_data}")
+    return_data = {
+        'status':'success',
+        'message': f'received:{received_data["animal"]}'
+
+    }
+
     favPet = FavoritePet(
-    pet_id = request.get('animal'),
+    pet_id = received_data['animal'],
     user_id = g.user.id)
 
     db.session.add(favPet)
     db.session.commit()
 
-    return f'added pet:{pet_id} to user id: {user_id} fav'
-    
-    
+    return flask.Response(response=json.dumps(return_data), status=201)
+
+@app.route('/maybe', methods=['POST'])
+def add_maybe():
+    received_data=request.get_json()
+    print(f"received_data{received_data}")
+    return_data = {
+        'status':'success',
+        'message': f'received:{received_data["animal"]}'
+    }
+
+    maybePet = MaybePet(
+    pet_id = received_data['animal'],
+    user_id = g.user.id)
+
+    db.session.add(maybePet)
+    db.session.commit()
+
+    return flask.Response(response=json.dumps(return_data), status=201)
+

@@ -12,6 +12,8 @@ const $favBtn = $('.favorite')
 const $maybeBtn = $('.maybe')
 const $noBtn = $('.no')
 const $formUserLikes = $('.form-user-likes')
+const $formUserMaybe = $('.form-user-maybe')
+const $formUserNo = $('.form-user-no')
 
 $formUserLikes.on('click', 'button', function(e){
     e.preventDefault();
@@ -19,7 +21,14 @@ $formUserLikes.on('click', 'button', function(e){
     // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
     //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
     console.log(response)
+})
 
+$formUserMaybe.on('click', 'button', function(e){
+    e.preventDefault();
+    response =axios({method: 'post', url:'/maybe', data:{animal: e.target.dataset.animal}})
+    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
+    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
+    console.log(response)
 })
 
 

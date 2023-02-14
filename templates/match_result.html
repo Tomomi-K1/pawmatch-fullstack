@@ -8,8 +8,9 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-<div class="match-display-area">
+<div class="match-display-area row justify-content-md-center">
     {% for animal in list_of_animals %}
+    <div class="col-md-7 col-lg-7">
     <div class="card data-{{animal['id']}}">
     <div class="matched-pet card-body">
     <h1 class="card-title">{{animal['name']}}</h1>
@@ -19,7 +20,7 @@
         <img src="{{photo['large']}}" alt="{{animal['species']}}">
         {% endfor %} -->
         {% if animal['photos'] %}
-        <img src="{{animal['photos'][0]['large']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
+        <img src="{{animal['photos'][0]['medium']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
             {% else %}
         <img src="default.jpg" alt="no picture">
         {% endif %}   
@@ -35,13 +36,18 @@
             <h3>Do you want to adopt {{animal['name']}}?</h3>
             <form action="/likes" class="form-group form-user-likes">
                 <button class="favorite btn btn-warning" data-animal="{{animal['id']}}">I want to adopt {{animal['name']}}!</buttton>
+            </form>
+            <form action="/maybe" class="form-group form-user-maybe">    
                 <button class="maybe btn btn-success" data-animal="{{animal['id']}}"> Nore sure, Maybe?</buttton>
+            </form>
+            <form action="/no" class="form-group form-user-no">
                 <button class="no btn btn-light" data-animal="{{animal['id']}}"> No </buttton>
             </form>
             <!-- <button class="nextbtn"></button> -->
         </div>
     </div>
     </div>
+  </div>
     {% endfor %}
 </div>
 

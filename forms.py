@@ -12,7 +12,7 @@ class LoginForm(FlaskForm):
     password =PasswordField('Password', validators=[DataRequired(), Length(min=6)])
 
 class UserPreferenceForm(FlaskForm):
-    pet_type = RadioField('Type of Pet')
+    pet_type = RadioField('Type of Pet', choices=[ ("Dog", "Dog"), ("Cat","Cat"), ("Rabbit", "Rabbit"), ("Small & Furry","Small & Furry"), ("Horse", "Horse"), ("Bird", "Bird"), ("Scales, Fins & Other", "Scales, Fins & Other"), ("Barnyard","Barnyard")])
     # breed = SelectField('Breed')
     size = RadioField('Size', choices=[('small','small'), ('medium','medium'), ('large','large'), ('xlarge','xlarge')])
     gender = RadioField('Gender',choices=[('male','male'), ('female','female'), ('unknown','unknown')])
