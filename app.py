@@ -177,8 +177,13 @@ def user_page(user_id):
     """show user profile including preference, favorite pets, maybe pets saved"""
 
     user = User.query.get_or_404(user_id)
+    fav_pets = FavoritePet.query.all()
+    maybe_pets = MaybePet.query.all()
+    # make api calls to get data for each pets and store that in dictionary
+    # each rendered animal will have comments section, delete button
+    
 
-    return render_template('user_profile.html', user=user)
+    return render_template('user_profile.html', user=user, fav_pets=fav_pets, maybe_pets=maybe_pets)
 
 @app.route('/questions', methods=["GET", "POST"])
 def show_questions():
@@ -238,6 +243,8 @@ def add_fav():
 
     }
 
+    # get users fav pet, if aleady exist, don't add no action
+
     favPet = FavoritePet(
     pet_id = received_data['animal'],
     user_id = g.user.id)
@@ -255,6 +262,8 @@ def add_maybe():
         'status':'success',
         'message': f'received:{received_data["animal"]}'
     }
+
+    # get users maybe pet, if aleady exist, don't add no action
 
     maybePet = MaybePet(
     pet_id = received_data['animal'],

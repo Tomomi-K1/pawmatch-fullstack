@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{# ======= title ======== #}
+{% block title %} | User Profile {% endblock %}
+
+{# ======= body class name ======== #}
+{% block body_class %}user-profile{% endblock %}
+
+{# ======= main content area ======== #}
+{% block content %}
+<div class="row justify-content-md-center">
+    <div class="col-md-7 col-lg-5">
+        <h1>hello {{g.user.username}}</h1>
+        <p>pet you liked</p>
+        <p>pet you said "maybe"</p>
+    </div>
+  </div>
+
+
+{% endblock %}
