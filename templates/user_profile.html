@@ -18,6 +18,9 @@
             <div class="card data-{{animal['id']}}">
               <div class="liked-pet card-body">
                 <h1 class="card-title">{{animal['name']}}</h1>
+                <form class="form form-group delete-fav-form" action="/delete-fav" method="POST">
+                  <button class="btn btn-danger" data-animal="{{animal['id']}}"> Delete <i class="fas fa-trash-alt"></i></button>
+                </form>
                     <div class="img">
                     <!-- <h3>Like</h3> -->
                     <!-- {% for photo in animal['photos'] %}
@@ -50,6 +53,9 @@
             <div class="card data-{{animal['id']}}">
               <div class="liked-pet card-body">
                 <h1 class="card-title">{{animal['name']}}</h1>
+                <form class="form form-group delete-maybe-form" action="/delete-maybe" method="POST">
+                  <button class="btn btn-danger" data-animal="{{animal['id']}}"> Delete <i class="fas fa-trash-alt"></i></button>
+                </form>
                     <div class="img">
                     <!-- <h3>Like</h3> -->
                     <!-- {% for photo in animal['photos'] %}

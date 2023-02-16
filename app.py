@@ -255,6 +255,14 @@ def add_fav():
     }
 
     # get users fav pet, if aleady exist, don't add no action
+    if FavoritePet.query.get(received_data['animal']):
+        return_data = {
+        'status':'already in database',
+        'message': f'received:{received_data["animal"]}'
+        }
+        
+        return flask.Response(response=json.dumps(return_data), status=201)
+         
 
     favPet = FavoritePet(
     pet_id = received_data['animal'],
@@ -275,6 +283,13 @@ def add_maybe():
     }
 
     # get users maybe pet, if aleady exist, don't add no action
+    if MaybePet.query.get(received_data['animal']):
+        return_data = {
+        'status':'already in database',
+        'message': f'received:{received_data["animal"]}'
+        }
+        
+        return flask.Response(response=json.dumps(return_data), status=201)
 
     maybePet = MaybePet(
     pet_id = received_data['animal'],
@@ -285,3 +300,34 @@ def add_maybe():
 
     return flask.Response(response=json.dumps(return_data), status=201)
 
+@app.route('/delete-fav', methods=['POST'])
+def delete_fav():
+    received_data=request.get_json()
+    print(f"received_data{received_data}")
+    return_data = {
+        'status':'successfully deleted',
+        'message': f'received:{received_data["animal"]}'
+    }
+
+    deleting_pet = FavoritePet.query.get(received_data['animal'])
+    db.session.delete(deleting_pet)
+    db.session.commit()
+
+    return flask.Response(response=json.dumps(return_data), status=201)
+
+@app.route('/delete-maybe', methods=['POST'])
+def delete_maybe():
+    received_data=request.get_json()
+    print(f"received_data{received_data}")
+    return_data = {
+        'status':'successfully deleted',
+        'message': f'received:{received_data["animal"]}'
+    }
+
+    deleting_pet = MaybePet.query.get(received_data['animal'])
+    db.session.delete(deleting_pet)
+    db.session.commit()
+
+    return flask.Response(response=json.dumps(return_data), status=201)
+
+    

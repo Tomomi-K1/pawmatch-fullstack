@@ -15,6 +15,11 @@ const $formUserLikes = $('.form-user-likes');
 const $formUserMaybe = $('.form-user-maybe');
 const $formUserNo = $('.form-user-no');
 
+
+// =========== user_profie.html==============
+const $deleteFav = $('.delete-fav-form');
+const $deleteMaybe = $('.delete-maybe-form');
+
 $formUserLikes.on('click', 'button', function(e){
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -42,7 +47,21 @@ $formUserNo.on('click', 'button', function(e){
     console.log(response)
 })
 
+$deleteFav.on('click', 'button', function(e){
+    e.preventDefault();
+    let response =axios({method: 'post', url:'/delete-fav', data:{animal: e.target.dataset.animal}})
+    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
+    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
+    console.log(response)
+})
 
+$deleteMaybe.on('click', 'button', function(e){
+    e.preventDefault();
+    let response =axios({method: 'post', url:'/delete-maybe', data:{animal: e.target.dataset.animal}})
+    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
+    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
+    console.log(response)
+})
 
 
 
