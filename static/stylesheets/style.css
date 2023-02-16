@@ -77,3 +77,7 @@ li{
     animation-delay: 1.2s;
   }
   
+  /* user profile */
+  .liked-animal{
+    background-color: pink;
+  }

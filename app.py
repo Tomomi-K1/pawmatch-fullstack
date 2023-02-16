@@ -177,11 +177,22 @@ def user_page(user_id):
     """show user profile including preference, favorite pets, maybe pets saved"""
 
     user = User.query.get_or_404(user_id)
-    fav_pets = FavoritePet.query.all()
-    maybe_pets = MaybePet.query.all()
+    fav_pets_id = [pet.pet_id for pet in FavoritePet.query.all()]
+    fav_pets =[]
+    for pet_id in fav_pets_id:
+         response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
+         data = response.json()
+         fav_pets.append(data['animal'])
+
+       
+    maybe_pets_id = [pet.pet_id for pet in MaybePet.query.all()]
+    maybe_pets =[]
+    for pet_id in maybe_pets_id:
+         response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
+         data = response.json()
+         maybe_pets.append(data['animal'])
     # make api calls to get data for each pets and store that in dictionary
-    # each rendered animal will have comments section, delete button
-    
+    # each rendered animal will have comments section, delete button    
 
     return render_template('user_profile.html', user=user, fav_pets=fav_pets, maybe_pets=maybe_pets)
 
