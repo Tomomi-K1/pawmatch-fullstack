@@ -288,7 +288,7 @@ def add_maybe():
         'status':'already in database',
         'message': f'received:{received_data["animal"]}'
         }
-        
+
         return flask.Response(response=json.dumps(return_data), status=201)
 
     maybePet = MaybePet(
@@ -309,8 +309,7 @@ def delete_fav():
         'message': f'received:{received_data["animal"]}'
     }
 
-    deleting_pet = FavoritePet.query.get(received_data['animal'])
-    db.session.delete(deleting_pet)
+    FavoritePet.query.filter_by(pet_id=received_data['animal']).delete()
     db.session.commit()
 
     return flask.Response(response=json.dumps(return_data), status=201)
@@ -324,8 +323,7 @@ def delete_maybe():
         'message': f'received:{received_data["animal"]}'
     }
 
-    deleting_pet = MaybePet.query.get(received_data['animal'])
-    db.session.delete(deleting_pet)
+    MaybePet.query.filter_by(pet_id=received_data['animal']).delete()
     db.session.commit()
 
     return flask.Response(response=json.dumps(return_data), status=201)

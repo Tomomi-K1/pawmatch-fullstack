@@ -12,9 +12,9 @@
     <div class="col-md-7 col-lg-5">
         <h1>hello {{g.user.username}}</h1>
         <h2>pet you liked</h2>
-        <div class="liked-animal">
+        <div class="liked-animal row row-cols-1 row-cols-md-4>
           {% for animal in fav_pets %}
-          <div class="col-md-7 col-lg-7">
+          <div class="card col">
             <div class="card data-{{animal['id']}}">
               <div class="liked-pet card-body">
                 <h1 class="card-title">{{animal['name']}}</h1>
@@ -27,7 +27,7 @@
                     <img src="{{photo['large']}}" alt="{{animal['species']}}">
                     {% endfor %} -->
                     {% if animal['photos'] %}
-                    <img src="{{animal['photos'][0]['medium']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
+                    <img src="{{animal['photos'][0]['small']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
                     {% else %}
                     <img src="default.jpg" alt="no picture">
                     {% endif %}   
@@ -62,7 +62,7 @@
                     <img src="{{photo['large']}}" alt="{{animal['species']}}">
                     {% endfor %} -->
                     {% if animal['photos'] %}
-                    <img src="{{animal['photos'][0]['medium']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
+                    <img src="{{animal['photos'][0]['small']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
                     {% else %}
                     <img src="default.jpg" alt="no picture">
                     {% endif %}   
