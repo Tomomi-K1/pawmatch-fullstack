@@ -254,8 +254,8 @@ def add_fav():
 
     }
 
-    # get users fav pet, if aleady exist, don't add no action
-    if FavoritePet.query.get(received_data['animal']):
+    all_fav=FavoritePet.query.all()# get users fav pet, if aleady exist, don't add no action
+    if FavoritePet.query.filter_by(pet_id=received_data['animal']) in all_fav:
         return_data = {
         'status':'already in database',
         'message': f'received:{received_data["animal"]}'
@@ -263,15 +263,15 @@ def add_fav():
         
         return flask.Response(response=json.dumps(return_data), status=201)
          
+    else:
+        favPet = FavoritePet(
+        pet_id = received_data['animal'],
+        user_id = g.user.id)
 
-    favPet = FavoritePet(
-    pet_id = received_data['animal'],
-    user_id = g.user.id)
+        db.session.add(favPet)
+        db.session.commit()
 
-    db.session.add(favPet)
-    db.session.commit()
-
-    return flask.Response(response=json.dumps(return_data), status=201)
+        return flask.Response(response=json.dumps(return_data), status=201)
 
 @app.route('/maybe', methods=['POST'])
 def add_maybe():
@@ -282,8 +282,8 @@ def add_maybe():
         'message': f'received:{received_data["animal"]}'
     }
 
-    # get users maybe pet, if aleady exist, don't add no action
-    if MaybePet.query.get(received_data['animal']):
+    all_maybe=MaybePet.query.all()
+    if MaybePet.query.filter_by(pet_id=received_data['animal']) in all_maybe:
         return_data = {
         'status':'already in database',
         'message': f'received:{received_data["animal"]}'
@@ -299,6 +299,8 @@ def add_maybe():
     db.session.commit()
 
     return flask.Response(response=json.dumps(return_data), status=201)
+
+
 
 @app.route('/delete-fav', methods=['POST'])
 def delete_fav():
