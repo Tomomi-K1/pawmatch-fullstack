@@ -267,6 +267,18 @@ def add_fav():
         return flask.Response(response=json.dumps(return_data), status=201)
          
     else:
+        # ここでAPIコールしてanimalIDから得た情報でFavaritePetをDatabaseに追加する
+        # 追加する情報は？
+        # pet_id
+        # imgurl
+        # pet_name
+        # pet_description
+        # location_city
+        # location_state
+        # organization_id
+
+        # get organization info 
+
         favPet = FavoritePet(
         pet_id = received_data['animal'],
         user_id = g.user.id)
