@@ -41,10 +41,13 @@
                     <p><a href="{{animal['_links']['organization']}}">Organization</a></p> 
                   </div>
                   <div>
+                  
                     <form class="pet-comment form-group" method="POST">
+                      <div>
                       {{ form.hidden_tag() }}
-                      {{ from.comment.label}}
-                      {% form_field form.comment class="pet-textarea" %}
+                      <p>{{ form.comment.label}}</p>
+                      {{ form.comment(class="pet-textarea") }}
+                      </div>
                       <button class="btn btn-success" data-animal="{{animal['id']}}"> add a comment </button>
                     </form> 
                   </div>
