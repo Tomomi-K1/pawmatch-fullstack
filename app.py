@@ -176,6 +176,8 @@ def home():
 def user_page(user_id):
     """show user profile including preference, favorite pets, maybe pets saved"""
 
+    form=CommentForm()
+
     user = User.query.get_or_404(user_id)
     fav_pets_id = [pet.pet_id for pet in FavoritePet.query.all()]
     fav_pets =[]
@@ -194,7 +196,7 @@ def user_page(user_id):
     # make api calls to get data for each pets and store that in dictionary
     # each rendered animal will have comments section, delete button    
 
-    return render_template('user_profile.html', user=user, fav_pets=fav_pets, maybe_pets=maybe_pets)
+    return render_template('user_profile.html', user=user, fav_pets=fav_pets, maybe_pets=maybe_pets, form=form)
 
 @app.route('/questions', methods=["GET", "POST"])
 def show_questions():
@@ -254,6 +256,7 @@ def add_fav():
 
     }
 
+    # =====this logic is not working why???========
     all_fav=FavoritePet.query.all()# get users fav pet, if aleady exist, don't add no action
     if FavoritePet.query.filter_by(pet_id=received_data['animal']) in all_fav:
         return_data = {
@@ -330,4 +333,22 @@ def delete_maybe():
 
     return flask.Response(response=json.dumps(return_data), status=201)
 
-    
+@app.route('/comments/<int:pet_id>', methods=['POST'])
+def add_pet_comments(pet_id):
+    received_data=request.get_json()
+    print(f"received_data{received_data}")
+    return_data = {
+        'status':'successful',
+        'message': f'received:pet_id {received_data["animal"]}, comment:{received_data["comment"]}'
+    }
+
+    comment = Comment(
+        user_id=g.user.id,
+        pet_id =pet_id,
+        comment=received_data['comment']
+    )
+
+    db.session.add(comment)
+    db.session.commit()
+
+    return flask.Response(response=json.dumps(return_data), status=201)

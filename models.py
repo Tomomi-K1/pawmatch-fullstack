@@ -252,3 +252,7 @@ class Comment(db.Model):
         db.Integer
     )
 
+    comment= db.Column(
+        db.Text
+    )
+
