@@ -79,8 +79,8 @@ $petComment.on('click', 'button', function(e){
 
     // take comment and update the HTML page
     let commentSection = $(`.pet-comment-${pet_id} h3`);
-    let newElem = $('<p>').after(comment);
-    commentSection.append(newElem);
+    let newElem = $('<p>').text(comment);
+    commentSection.after(newElem);
     
     // clear entries
     $(`.data-${pet_id}`).find('.pet-textarea').val('')   
