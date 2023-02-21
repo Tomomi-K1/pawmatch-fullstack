@@ -71,29 +71,26 @@ $deleteMaybe.on('click', 'button', function(e){
 
 $petComment.on('click', 'button', function(e){
     e.preventDefault();
-    // let comment = ドウヤッテコッメントノvalueヲトル？ $().value()
-    let response =axios({method: 'post', url:`/comments/${e.target.dataset.animal}`, data:{animal: e.target.dataset.animal, comment:comment}})
+    let pet_id=e.target.dataset.animal
+    let comment = $(`.data-${pet_id}`).find('.pet-textarea').val()
+        
+    // call to backend to add a comment to database
+    let response =axios({method: 'post', url:`/comments/${pet_id}`, data:{animal: pet_id, comment:comment}})
+
+    // take comment and update the HTML page
+    let commentSection = $(`.pet-comment-${pet_id} h3`);
+    let newElem = $('<p>').after(comment);
+    commentSection.append(newElem);
     
+    // clear entries
+    $(`.data-${pet_id}`).find('.pet-textarea').val('')   
+    
+
+    console.log(comment)
     console.log(response)
 })
 
 
 
 
-
-
-
-// $readyBtn.on('click', function{
-
-// })
-
-
-
-// function hidePageCompornent(){
-//     $matchDisplayArea.hide()
-// }
-
-// function showFirstItem(){
-//     $matchedPet.
-// }
 

@@ -184,6 +184,7 @@ def user_page(user_id):
     for pet_id in fav_pets_id:
          response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
          data = response.json()
+         print(data)
          fav_pets.append(data['animal'])
 
        
@@ -267,6 +268,10 @@ def add_fav():
         return flask.Response(response=json.dumps(return_data), status=201)
          
     else:
+        # response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': user_pref.pet_type, 'size': user_pref.size, 'gender': user_pref.gender, 'age': user_pref.age, 'location': user_pref.zipcode, 'limit': 50, 'status': 'adoptable'})
+        # match_data = response.json()
+        # list_of_animals = match_data['animals']
+
         # ここでAPIコールしてanimalIDから得た情報でFavaritePetをDatabaseに追加する
         # 追加する情報は？
         # pet_id
@@ -278,7 +283,7 @@ def add_fav():
         # organization_id
 
         # get organization info 
-
+        
         favPet = FavoritePet(
         pet_id = received_data['animal'],
         user_id = g.user.id)

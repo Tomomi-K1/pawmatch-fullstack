@@ -23,5 +23,5 @@ class UserPreferenceForm(FlaskForm):
     zipcode = IntegerField('Zipcode', validators=[DataRequired()])
 
 class CommentForm(FlaskForm):
-    comment = TextAreaField('Comment')
+    comment = TextAreaField('Comment', validators=[DataRequired()])
 
