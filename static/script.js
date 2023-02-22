@@ -23,7 +23,10 @@ const $deleteMaybe = $('.delete-maybe-form');
 const $petComment = $('.pet-comment');
 
 // =========questions.html===================
-const $searchStartBtn = $('.search-start')
+const $searchStartBtn = $('.search-start');
+
+// =======org_search.html ==================
+const $orgSearch = $('.org-search');
 
 $formUserLikes.on('click', 'button', function(e){
     e.preventDefault();
@@ -94,10 +97,9 @@ $petComment.on('click', 'button', function(e){
     console.log(response)
 })
 
-// $('.show-my-pets').on('click', 'button', function(e){
-//     $loader.show()
- 
-// })
+// $orgSearch.on('click', 'button', )
+
+
 
 //=============this is not working================== 
 

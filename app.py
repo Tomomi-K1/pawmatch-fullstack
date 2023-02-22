@@ -49,7 +49,7 @@ def get_token():
     return data['access_token']
 
 ACCESS_TOKEN = get_token()
-print(ACCESS_TOKEN)
+print(f'1:{ACCESS_TOKEN}')
 
 # setInterval(get_token,3600)
 # option1 - maybe I can get datestamp when I get access token. Then if(ACCESS_TOKEN), check datetime to see if it's past 3600 seconds. if so, we need to get new token.
@@ -197,6 +197,12 @@ def home():
 @app.route('/pets/users/<int:user_id>')
 def user_page(user_id):
     """show user profile including preference, favorite pets, maybe pets saved"""
+    
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/home")
+    # do I need to put if g.user_id does not equal  to user_id?
+
 
     form=CommentForm()
 
@@ -399,7 +405,18 @@ def add_pet_comments(pet_id):
     return flask.Response(response=json.dumps(return_data), status=201)
 
 # ==============org search ==============================
-@app.route('/org-search', methods=['GET'])
+@app.route('/org-search', methods=['GET', 'POST'])
 def search_show_org():
+
+    org_list = []
+    
+    user_query = request.args.get('search-word')
+    response = requests.get(f'{API_BASE_URL}/organizations', headers=headers, params={'query': user_query})
+    data = response.json()
+    
+
+
+    
+
     
     return render_template('org_search.html')

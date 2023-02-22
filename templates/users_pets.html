@@ -27,7 +27,7 @@
                     <img src="{{photo['large']}}" alt="{{animal['species']}}">
                     {% endfor %} -->
                     {% if animal['photos'] %}
-                    <img src="{{animal['photos'][0]['small']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
+                    <img src="{{animal['photos'][0]['small']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}" height="300", width="300">
                     {% else %}
                     <img src="default.jpg" alt="no picture">
                     {% endif %}   
@@ -83,7 +83,7 @@
                     <img src="{{photo['large']}}" alt="{{animal['species']}}">
                     {% endfor %} -->
                     {% if animal['photos'] %}
-                    <img src="{{animal['photos'][0]['small']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
+                    <img src="{{animal['photos'][0]['small']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}" height="300", width="300">
                     {% else %}
                     <img src="default.jpg" alt="no picture">
                     {% endif %}   
