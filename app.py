@@ -49,6 +49,7 @@ def get_token():
     return data['access_token']
 
 ACCESS_TOKEN = get_token()
+print(ACCESS_TOKEN)
 
 # setInterval(get_token,3600)
 # option1 - maybe I can get datestamp when I get access token. Then if(ACCESS_TOKEN), check datetime to see if it's past 3600 seconds. if so, we need to get new token.
@@ -396,3 +397,7 @@ def add_pet_comments(pet_id):
     db.session.commit()
 
     return flask.Response(response=json.dumps(return_data), status=201)
+
+# ==============org search ==============================
+# @app.route('/org-search', methods=['GET','POST'])
+

@@ -14,9 +14,10 @@ const $noBtn = $('.no');
 const $formUserLikes = $('.form-user-likes');
 const $formUserMaybe = $('.form-user-maybe');
 const $formUserNo = $('.form-user-no');
+const $showMyPetBtn = $('.show-my-pets')
 
 
-// =========== user_profie.html==============
+// =========== users_pets.html==============
 const $deleteFav = $('.delete-fav-form');
 const $deleteMaybe = $('.delete-maybe-form');
 const $petComment = $('.pet-comment');
@@ -94,7 +95,17 @@ $petComment.on('click', 'button', function(e){
 //     $loader.show()
  
 // })
-{/* <button type="submi" formaction="/comments/{{comment.id}}/update">update</button> */}
+$showMyPetBtn.onClick(function(e){
+    showMyPetBtn.hide()
+    $loader.show()
+    
+    if ($('document').find('.user-pets')){
+    $lodaer.hide()
+    $('.user-pets').show()
+    }
+})
+
+
 
 
 

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{# ======= title ======== #}
+{% block title %} | Organization Search {% endblock %}
+
+{# ======= body class name ======== #}
+{% block body_class %}org-search{% endblock %}
+
+{# ======= main content area ======== #}
+{% block content %}
+    <h1>Let's find the Adoptin Organization</h1>
+    
+    <form action="/org-search" method="POST">
+        <h3>Type location(State, City), organization name</h3>
+        <label for="search-word">Search</label>
+        <input type="text">
+    </form>
+
+{% endblock %}
