@@ -399,5 +399,7 @@ def add_pet_comments(pet_id):
     return flask.Response(response=json.dumps(return_data), status=201)
 
 # ==============org search ==============================
-# @app.route('/org-search', methods=['GET','POST'])
-
+@app.route('/org-search', methods=['GET'])
+def search_show_org():
+    
+    return render_template('org_search.html')

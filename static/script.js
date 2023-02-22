@@ -22,6 +22,9 @@ const $deleteFav = $('.delete-fav-form');
 const $deleteMaybe = $('.delete-maybe-form');
 const $petComment = $('.pet-comment');
 
+// =========questions.html===================
+const $searchStartBtn = $('.search-start')
+
 $formUserLikes.on('click', 'button', function(e){
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -95,6 +98,9 @@ $petComment.on('click', 'button', function(e){
 //     $loader.show()
  
 // })
+
+//=============this is not working================== 
+
 $showMyPetBtn.onClick(function(e){
     showMyPetBtn.hide()
     $loader.show()
@@ -102,6 +108,16 @@ $showMyPetBtn.onClick(function(e){
     if ($('document').find('.user-pets')){
     $lodaer.hide()
     $('.user-pets').show()
+    }
+})
+
+$searchStartBtn.onClick(function(e){
+    $('.question-area').hide()
+    $loader.show()
+    
+    if ($('document').find('.match-result')){
+    $lodaer.hide()
+    $('.match-display-area').show()
     }
 })
 
