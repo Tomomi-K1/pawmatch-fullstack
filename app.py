@@ -63,6 +63,7 @@ headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
 
 CURR_USER_KEY = 'curr_user'
 
+org_list = []
 # ============================================================#
 #=== signup/login/logout g.user & Session assign handling ====#
 # ============================================================#
@@ -212,7 +213,7 @@ def user_page(user_id):
     for pet_id in fav_pets_id:
          response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
          data = response.json()
-         print(data)
+        #  print(data)
          fav_pets.append(data['animal'])
 
     comments = Comment.query.filter_by(user_id = g.user.id)
@@ -405,18 +406,22 @@ def add_pet_comments(pet_id):
     return flask.Response(response=json.dumps(return_data), status=201)
 
 # ==============org search ==============================
-@app.route('/org-search', methods=['GET', 'POST'])
-def search_show_org():
-
-    org_list = []
+@app.route('/org-search', methods=['GET'])
+def show_search_page():
     
+    return render_template('org_search.html')
+
+@app.route('/org-results', methods=['POST'])
+def search_result():
+
+    # org_list = []
+
     user_query = request.args.get('search-word')
     response = requests.get(f'{API_BASE_URL}/organizations', headers=headers, params={'query': user_query})
     data = response.json()
-    
+    orgs = data['organizations']
+    print(orgs)
 
-
+    return render_template('org_results.html', user_query=user_query, orgs_list=orgs)
     
-
     
-    return render_template('org_search.html')

@@ -12,7 +12,7 @@
     <div class="col">
         <h1>Let's Find Adoptin Organizations!</h1>
         <div class="mt-3">
-            <form class="form form-group org-search" action="/org-search" method="POST">
+            <form class="form form-group org-search" action="/org-results" method="POST">
                 
                 <label class="form-label" for="search-word">Search Organizations</label>
                 <p>Type location(State, City), organization name</p>
@@ -22,9 +22,6 @@
         </div>
     </div>
 
-    <!-- show results -->
-    <div id="results">
-        <div class="card orgid-{{org_id}}"></div>
-    </div>
+
 </div>
 {% endblock %}

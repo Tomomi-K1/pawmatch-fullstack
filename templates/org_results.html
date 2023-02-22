@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{# ======= title ======== #}
+{% block title %} | Organization Search Results{% endblock %}
+
+{# ======= body class name ======== #}
+{% block body_class %}org-search-results{% endblock %}
+
+{# ======= main content area ======== #}
+{% block content %}
+<div class="container-fluid">
+    <h2>Organization Search Result</h2>
+    <p>searched word: {{user_query}}</p>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+          {% for org in orgs_list %}
+            <div class="col card data-{{org.id}} m-2">
+                <div class="card-body">
+                    <h1 class="card-title"><a href="{{org.url}}"></a>{{org.name}}</h1>
+                    <!-- <div class="img">
+                        <img src="{{org.photos[0].small}}" class="img-thumbnail img-fluid card-img-top" alt="{{org.name}}" height="300", width="300">         
+                    </div> -->
+                </div>
+            </div>
+          {% endfor %}
+        </div>  
+</div>          
+{% endblock %}
