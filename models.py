@@ -53,6 +53,16 @@ class User(db.Model):
     def __repr__(self):
         return f'<User #{self.id}: {self.username}>'
 
+    def updateUser(self, username, email, password):
+               
+        hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+
+        self.username = username
+        self.email=email
+        self.password =hashed_pwd
+
+        return f'user: updated'
+
     @classmethod
     def signup(cls, username, email, password):
         """Sign up user.
@@ -70,6 +80,8 @@ class User(db.Model):
 
         db.session.add(user)
         return user
+    
+   
 
     @classmethod
     def authenticate(cls, username, password):

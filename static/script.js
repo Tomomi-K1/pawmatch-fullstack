@@ -44,11 +44,11 @@ $formUserMaybe.on('click', 'button', function(e){
 $formUserNo.on('click', 'button', function(e){
     e.preventDefault();
     e.stopImmediatePropagation();
-    let response =axios({method: 'post', url:'/no', data:{animal: e.target.dataset.animal}})
+    // let response =axios({method: 'post', url:'/no', data:{animal: e.target.dataset.animal}})
     // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
     //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
     $('.data-'+ e.target.dataset.animal).remove()
-    console.log(response)
+    console.log("no")
 })
 
 $deleteFav.on('click', 'button', function(e){
@@ -80,7 +80,7 @@ $petComment.on('click', 'button', function(e){
     // take comment and update the HTML page
     let commentSection = $(`.pet-comment-${pet_id} h3`);
     let newElem = $('<p>').text(comment);
-    commentSection.after(newElem);
+    commentSection.After(newElem);
     
     // clear entries
     $(`.data-${pet_id}`).find('.pet-textarea').val('')   
@@ -90,6 +90,11 @@ $petComment.on('click', 'button', function(e){
     console.log(response)
 })
 
+// $('.show-my-pets').on('click', 'button', function(e){
+//     $loader.show()
+ 
+// })
+{/* <button type="submi" formaction="/comments/{{comment.id}}/update">update</button> */}
 
 
 

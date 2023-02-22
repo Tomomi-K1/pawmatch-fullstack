@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{# ======= title ======== #}
+{% block title %} | User Profile {% endblock %}
+
+{# ======= body class name ======== #}
+{% block body_class %}user-profile{% endblock %}
+
+{# ======= main content area ======== #}
+{% block content %}
+<div class="container">
+    
+    <h1>hello {{g.user.username}}</h1>
+    <h2>pet you liked</h2>
+    <!-- <div class="col-md-7 col-lg-5"> -->
+        <div class="liked-animal row row-cols-1 row-cols-sm-2 row-cols-md-4">
+          {% for animal in fav_pets %}
+          <!-- <div class="card col"> -->
+            <div class="col card data-{{animal['id']}}">
+              <div class="liked-pet card-body">
+                <h1 class="card-title">{{animal['name']}}</h1>
+                <form class="form form-group delete-fav-form" action="/delete-fav" method="POST">
+                  <button class="btn btn-danger" data-animal="{{animal['id']}}"> Delete <i class="fas fa-trash-alt"></i></button>
+                </form>
+                  <div class="img">
+                    <!-- <h3>Like</h3> -->
+                    <!-- {% for photo in animal['photos'] %}
+                    <img src="{{photo['large']}}" alt="{{animal['species']}}">
+                    {% endfor %} -->
+                    {% if animal['photos'] %}
+                    <img src="{{animal['photos'][0]['small']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
+                    {% else %}
+                    <img src="default.jpg" alt="no picture">
+                    {% endif %}   
+                  </div>
+                  <div class="description">
+                    <h3>About {{animal['name']}}</h3>
+                    <p>{{animal['type']}} {{animal['breed']}} {{animal['age']}} {{animal['gender']}} {{animal['size']}}</p>
+                    <br>
+                    <p>Description: {{animal['description']}}</p>
+                    <p>Location: {{animal['contact']['address']['city']}}, {{animal['contact']['address']['state']}}</p>
+                    <p><a href="{{animal['_links']['organization']}}">Organization</a></p> 
+                  </div>
+                  <div class="pet-comment-{{animal['id']}}">
+                    <h3>Comments</h3>
+                    {% if comments %}
+                      {% for comment in comments %}
+                        {% if comment.pet_id == animal['id'] %}
+                        <p class="{{comment.id}}">{{comment.comment}}</p>
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                    <form class="pet-comment form-group" method="POST">
+                      <div>
+                      {{ form.hidden_tag() }}
+                      <!-- <p>{{ form.comment.label}}</p> -->
+                      {{ form.comment(class="pet-textarea") }}
+                      </div>
+                      <button class="btn btn-success" data-animal="{{animal['id']}}"> add a comment </button>
+                    </form> 
+                  </div>
+
+              </div>
+            </div>
+          <!-- </div> -->
+          {% endfor %}
+        </div>
+
+        <h2>pet you said "maybe"</h2>
+        <div class="maybe-animal row row-cols-1 row-cols-sm-2 row-cols-md-4">
+          {% for animal in maybe_pets %}
+          <!-- <div class="col-md-7 col-lg-7"> -->
+            <div class="col card data-{{animal['id']}}">
+              <div class="liked-pet card-body">
+                <h1 class="card-title">{{animal['name']}}</h1>
+                <form class="form form-group delete-maybe-form" action="/delete-maybe" method="POST">
+                  <button class="btn btn-danger" data-animal="{{animal['id']}}"> Delete <i class="fas fa-trash-alt"></i></button>
+                </form>
+                    <div class="img">
+                    <!-- <h3>Like</h3> -->
+                    <!-- {% for photo in animal['photos'] %}
+                    <img src="{{photo['large']}}" alt="{{animal['species']}}">
+                    {% endfor %} -->
+                    {% if animal['photos'] %}
+                    <img src="{{animal['photos'][0]['small']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
+                    {% else %}
+                    <img src="default.jpg" alt="no picture">
+                    {% endif %}   
+                    </div>
+                    <div class="description">
+                        <h3>About {{animal['name']}}</h3>
+                        <p>{{animal['type']}} {{animal['breed']}} {{animal['age']}} {{animal['gender']}} {{animal['size']}}</p>
+                        <br>
+                        <p>Description: {{animal['description']}}</p>
+                        <p>Location: {{animal['contact']['address']['city']}}, {{animal['contact']['address']['state']}}</p>
+                        <p><a href="{{animal['_links']['organization']}}">Organization</a></p> 
+                    </div>
+                    <div>
+                  
+                      <form class="pet-comment form-group" method="POST">
+                        <div>
+                        {{ form.hidden_tag() }}
+                        <p>{{ form.comment.label}}</p>
+                        {{ form.comment(class="pet-textarea") }}
+                        </div>
+                        <button class="btn btn-success" data-animal="{{animal['id']}}"> add a comment </button>
+                      </form> 
+                    </div>
+  
+              </div>
+            </div>
+          <!-- </div> -->
+          {% endfor %}
+        </div>
+    <!-- </div> -->
+  </div>
+
+
+{% endblock %}

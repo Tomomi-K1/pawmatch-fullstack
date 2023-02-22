@@ -9,7 +9,7 @@ import threading
 from flask_cors import CORS
 
 from models import db, connect_db, User, UserPreference, FavoritePet, MaybePet, FavoriteOrg, Comment
-from forms import SignupForm, LoginForm, UserPreferenceForm, CommentForm
+from forms import UserForm, LoginForm, UserPreferenceForm, CommentForm
 from config_info import API_KEY,API_SECRET, SECRET_KEY
 
 # create the app
@@ -100,7 +100,7 @@ def signup():
     # make sure no one is logged in before signup
     do_logout()
 
-    form = SignupForm()
+    form = UserForm()
 
     if form.validate_on_submit():
         try:
@@ -150,6 +150,27 @@ def logout():
     flash('You have logged out successfully', 'success')
     return redirect('/home')
 
+@app.route('/users/profile/<int:user_id>', methods=['GET', 'POST'])
+def show_edit_user(user_id):
+    
+    # if g.user.id is not equial to user id:
+    #     flash('Please log in')
+    #     return redirect('/login')
+    
+    user = User.query.get_or_404(user_id)
+    form = UserForm(obj=user)
+
+    if form.validate_on_submit():
+        user.updateUser(form.username.data, form.email.data, form.password.data)
+
+        db.session.commit()
+
+        flash('Your Info was Successfully Updated!', 'success')
+
+        return render_template('user_profile.html', form = form, user=user)
+    
+    return render_template('user_profile.html', form = form, user=user)
+
 # ============================================================#
 #========= End of User Signup & Login & Logout ===============#
 # ============================================================#
@@ -171,8 +192,8 @@ def home():
     
     return render_template('home.html')
 
-
-@app.route('/users/<int:user_id>')
+# ================ Show all Fav and maybe pet =================================
+@app.route('/pets/users/<int:user_id>')
 def user_page(user_id):
     """show user profile including preference, favorite pets, maybe pets saved"""
 
@@ -187,6 +208,8 @@ def user_page(user_id):
          print(data)
          fav_pets.append(data['animal'])
 
+    comments = Comment.query.filter_by(user_id = g.user.id)
+
        
     maybe_pets_id = [pet.pet_id for pet in MaybePet.query.all()]
     maybe_pets =[]
@@ -197,8 +220,10 @@ def user_page(user_id):
     # make api calls to get data for each pets and store that in dictionary
     # each rendered animal will have comments section, delete button    
 
-    return render_template('user_profile.html', user=user, fav_pets=fav_pets, maybe_pets=maybe_pets, form=form)
+    return render_template('users_pets.html', user=user, fav_pets=fav_pets, maybe_pets=maybe_pets, comments = comments, form=form)
 
+
+#============= Get user's preference and show result ======================= 
 @app.route('/questions', methods=["GET", "POST"])
 def show_questions():
 
@@ -247,6 +272,7 @@ def show_questions():
 
     return render_template('questions.html', form=form)
 
+# =============adding pets to Favorite or Maybe========================
 @app.route('/likes', methods=['POST'])
 def add_fav():
     received_data=request.get_json()
@@ -321,7 +347,7 @@ def add_maybe():
     return flask.Response(response=json.dumps(return_data), status=201)
 
 
-
+# ============= DELETE user's favorite & maybe pet===========================
 @app.route('/delete-fav', methods=['POST'])
 def delete_fav():
     received_data=request.get_json()
@@ -350,6 +376,7 @@ def delete_maybe():
 
     return flask.Response(response=json.dumps(return_data), status=201)
 
+# ================add user comments of a pet to DB ===========================
 @app.route('/comments/<int:pet_id>', methods=['POST'])
 def add_pet_comments(pet_id):
     received_data=request.get_json()

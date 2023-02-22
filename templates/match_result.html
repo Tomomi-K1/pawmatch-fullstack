@@ -45,7 +45,7 @@
                 </form>
             </div>
             <div>
-                <form action="/no" class="form form-user-no">
+                <form action="#" class="form form-user-no">
                     <button class="no btn btn-light" data-animal="{{animal['id']}}"> No </buttton>
                 </form>
             </div>
@@ -54,8 +54,11 @@
         </div>
     </div>
     </div>
-  </div>
+    </div>
     {% endfor %}
+    <form action="/pets/users/{{g.user.id}}">
+        <button class="btn btn-light show-my-pets">Show My Favorites and Maybe Pets</button>
+    </form>
 </div>
 
 

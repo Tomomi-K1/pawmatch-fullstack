@@ -48,7 +48,10 @@
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link navbar-username" href="users/{{g.user.id}}"> {{ g.user.username }} </a>
+          <a class="nav-link navbar-username" href="/users/profile/{{g.user.id}}"> {{ g.user.username }} </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link navbar-mypets" href="/pets/users/{{g.user.id}}"> {{ g.user.username }}'s Pets </a>
         </li>
         <li class="nav-item">
           <a class="nav-link logout" href="/logout"> Log Out </a>
@@ -81,54 +84,6 @@
 
 </div>
 
-
-
-<!-- <nav class="navbar navbar-expand">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a href="/" class="navbar-brand">
-        <img src="/static/images/warbler-logo.png" alt="logo">
-        <span>Paw Match</span>
-      </a>
-    </div>
-    <ul class="nav navbar-nav navbar-right">
-      {% if request.endpoint != None %}
-      <li>
-        <form class="navbar-form navbar-right" action="/users">
-          <input name="q" class="form-control" placeholder="Search Warbler" id="search">
-          <button class="btn btn-default">
-            <span class="fa fa-search"></span>
-          </button>
-        </form>
-      </li>
-      {% endif %}
-      {% if not g.user %}
-      <li><a href="/signup">Sign up</a></li>
-      <li><a href="/login">Log in</a></li>
-      {% else %}
-      <li>
-        <a href="/users/{{ g.user.id }}">
-          <img src="{{ g.user.image_url }}" alt="{{ g.user.username }}">
-        </a>
-      </li>
-      <li><a href="/messages/new">New Message</a></li>
-      <li><a href="/logout">Log out</a></li>
-      {% endif %}
-    </ul>
-  </div>
-</nav>
-<div class="container">
-  {% for category, message in get_flashed_messages(with_categories=True) %}
-  <div class="alert alert-{{ category }}">{{ message }}</div>
-  {% endfor %}
-
-
-</div> -->
-<!--------------------- boostrap 4  ----------------------------->
-<!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script> -->
-<!-- -------------------------------------------------------- -->
 <script src="/static/script.js"></script>
 </body>
 </html>
