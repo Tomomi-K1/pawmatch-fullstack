@@ -28,6 +28,9 @@ const $searchStartBtn = $('.search-start');
 // =======org_search.html ==================
 const $orgSearch = $('.org-search');
 
+// ==========org_results.html==============
+const $orgComment = $('.org-comment');
+
 $formUserLikes.on('click', 'button', function(e){
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -51,9 +54,7 @@ $formUserMaybe.on('click', 'button', function(e){
 $formUserNo.on('click', 'button', function(e){
     e.preventDefault();
     e.stopImmediatePropagation();
-    // let response =axios({method: 'post', url:'/no', data:{animal: e.target.dataset.animal}})
-    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
-    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
+   
     $('.data-'+ e.target.dataset.animal).remove()
     console.log("no")
 })
@@ -76,6 +77,7 @@ $deleteMaybe.on('click', 'button', function(e){
     console.log(response)
 })
 
+// adding a comment on Favpet and maybe pet
 $petComment.on('click', 'button', function(e){
     e.preventDefault();
     let pet_id=e.target.dataset.animal
@@ -97,13 +99,35 @@ $petComment.on('click', 'button', function(e){
     console.log(response)
 })
 
+// adding comment on org
+// $orgComment.on('click', 'button', function(e){
+//     e.preventDefault();
+//     let org_id=e.target.dataset.org
+//     let comment = $(`.data-${org_id}`).find('.org-textarea').val()
+        
+//     // call to backend to add a comment to database
+//     let response =axios({method: 'post', url:`/comments/${org_id}`, data:{org: org_id, comment:comment}})
+
+//     // take comment and update the HTML page
+//     let commentSection = $(`.org-comment-${org_id} h3`);
+//     let newElem = $('<p>').text(comment);
+//     commentSection.After(newElem);
+    
+//     // clear entries
+//     $(`.data-${org_id}`).find('.org-textarea').val('')   
+    
+
+//     console.log(comment)
+//     console.log(response)
+// })
+
 // $orgSearch.on('click', 'button', )
 
 
 
 //=============this is not working================== 
 
-$showMyPetBtn.onClick(function(e){
+$showMyPetBtn.click(function(e){
     showMyPetBtn.hide()
     $loader.show()
     
@@ -113,7 +137,7 @@ $showMyPetBtn.onClick(function(e){
     }
 })
 
-$searchStartBtn.onClick(function(e){
+$searchStartBtn.click(function(e){
     $('.question-area').hide()
     $loader.show()
     

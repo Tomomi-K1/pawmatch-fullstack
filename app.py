@@ -63,7 +63,7 @@ headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
 
 CURR_USER_KEY = 'curr_user'
 
-org_list = []
+orgs_list = []
 # ============================================================#
 #=== signup/login/logout g.user & Session assign handling ====#
 # ============================================================#
@@ -213,7 +213,6 @@ def user_page(user_id):
     for pet_id in fav_pets_id:
          response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
          data = response.json()
-        #  print(data)
          fav_pets.append(data['animal'])
 
     comments = Comment.query.filter_by(user_id = g.user.id)
@@ -405,22 +404,48 @@ def add_pet_comments(pet_id):
 
     return flask.Response(response=json.dumps(return_data), status=201)
 
+# ========== add user comments of org to DB
+# @app.route('/comments/<int:pet_id>', methods=['POST'])
+# def add_pet_comments(pet_id):
+#     received_data=request.get_json()
+#     print(f"received_data{received_data}")
+#     return_data = {
+#         'status':'successful',
+#         'message': f'received:pet_id {received_data["animal"]}, comment:{received_data["comment"]}'
+#     }
+
+#     comment = Comment(
+#         user_id=g.user.id,
+#         pet_id =pet_id,
+#         comment=received_data['comment']
+#     )
+
+#     db.session.add(comment)
+#     db.session.commit()
+
+#     return flask.Response(response=json.dumps(return_data), status=201)
+
+
 # ==============org search ==============================
 @app.route('/org-search', methods=['GET'])
 def show_search_page():
     
     return render_template('org_search.html')
 
-@app.route('/org-results', methods=['POST'])
+@app.route('/org-results', methods=['GET'])
 def search_result():
 
-    # org_list = []
+    orgs_list = []
 
-    user_query = request.args.get('search-word')
+    user_query = request.args.get('q')
     response = requests.get(f'{API_BASE_URL}/organizations', headers=headers, params={'query': user_query})
     data = response.json()
     orgs = data['organizations']
-    print(orgs)
+    print(f'user_query:{user_query} orgs:{orgs}')
+    
+    orgs_list =[{'id': org['id'], 'name': org['name'], 'phone': org['phone'], 'city': org['address']['city'], 'state': org['address']['state'], 'url': org['url'], 'img_url': org['photos'][0]['small'] if len(org['photos']) != 0 else "None" } for org in orgs]
+    
+    print(f'orgs_list:{orgs_list}')
 
     return render_template('org_results.html', user_query=user_query, orgs_list=orgs)
     

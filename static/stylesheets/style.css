@@ -1,3 +1,7 @@
+html{
+  background-color: rgb(238, 238, 238);
+}
+
 .form-group{
     margin-bottom: 10px;
 }
@@ -82,4 +86,4 @@ li{
     background-color: pink;
   } */
 
-  .card{box-shadow:5px 10px #aeaa92;}
+  .card{box-shadow:5px 5px #aeaa92;}

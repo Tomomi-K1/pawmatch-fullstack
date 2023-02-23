@@ -10,17 +10,18 @@
 {% block content %}
 <div class="row justify-content-md-center">
     <div class="col">
-        <h1>Let's Find Adoptin Organizations!</h1>
+        <h1>Let's Find Adoption Organizations!</h1>
         <div class="mt-3">
-            <form class="form form-group org-search" action="/org-results" method="POST">
+            <form class="form form-group org-search" action="/org-results">
                 
                 <label class="form-label" for="search-word">Search Organizations</label>
-                <p>Type location(State, City), organization name</p>
-                <input class="form-control" type="text" name="search-word" id="search-word" placeholder="California" >
+                <p> Search by State, City, Organization Name</p>
+                <input class="form-control" type="text" name="q" id="search-word" placeholder="California" >
                 <button class="btn btn-warning">Search</button>
             </form>
         </div>
     </div>
+    
 
 
 </div>
