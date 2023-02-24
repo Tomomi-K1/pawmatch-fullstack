@@ -9,18 +9,15 @@ from flask_bcrypt import Bcrypt
 # create bycrypt instance
 bcrypt = Bcrypt()
 
-# create the extension
+# crate SQlAlchemy instance
 db = SQLAlchemy()
 
 # ========================== function to run database ================================#
 # this function is imported and used in app.py file
 def connect_db(app):
-    """Connect to database."""
-
+    """Connect to SQLAlchemy instance = database."""
     db.app = app
-    # initialize the app with the extension
     db.init_app(app)
-
 # =================================== USER class ====================================#
 
 class User(db.Model):
@@ -166,7 +163,7 @@ class UserPreference(db.Model):
 
 
 # =================================== Favorite Pet class ====================================#
-
+# one to many relationship  (in the future, maybe to fav pet をまとめてUsers Pet　Tableを作るほうが良いかも。 id, pet info, usersid, favorite(faulse or true), maybe(false or true) )
 class FavoritePet(db.Model):
 
     __tablename__ ='favorite_pets'
@@ -193,6 +190,8 @@ class FavoritePet(db.Model):
         
     # )
 
+    # favpetとUserのrelationshipを登録する
+
 # =================================== Maybe Pet class ====================================#        
 class MaybePet(db.Model):
 
@@ -216,6 +215,7 @@ class MaybePet(db.Model):
         nullable=False
     )
 
+    # maybepetとUserのrelationshipを登録する
 # =================================== Favorite Organization class ====================================#
 class FavoriteOrg(db.Model):
 
@@ -237,9 +237,10 @@ class FavoriteOrg(db.Model):
         db.Text,
         nullable=False
     )
+    # favorgとUserのrelationshipを登録する
 
 # =================================== Comments class ====================================#
-
+# one to many relationship. could be many to many if I had pet & org table. or pet_idをmaybepet_id, favpet_idの二つに分ける
 class Comment(db.Model):
 
     __tablename__ ='comments'

@@ -26,21 +26,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
-
-# db.create_all()
-
-
 # ============ API call requirements ======================#
-# from stackoverflow https://stackoverflow.com/questions/2697039/python-equivalent-of-setinterval
-
-# ACCESS_TIME = '0'
-# ACCESS_TOKEN =''
-
-# def setInterval(func,time):
-#     e = threading.Event()
-#     while not e.wait(time):
-#         func()
-
 def get_token():
     res = requests.post('https://api.petfinder.com/v2/oauth2/token', data={'grant_type':'client_credentials', 'client_id': API_KEY, 'client_secret': API_SECRET})
     # ACCESS_TIME = datetime.now()
@@ -49,21 +35,31 @@ def get_token():
     return data['access_token']
 
 ACCESS_TOKEN = get_token()
-print(f'1:{ACCESS_TOKEN}')
-
-# setInterval(get_token,3600)
-# option1 - maybe I can get datestamp when I get access token. Then if(ACCESS_TOKEN), check datetime to see if it's past 3600 seconds. if so, we need to get new token.
-
-# option2 - petfinder API wrapper for login support :https://github.com/aschleg/petpy
 
 API_BASE_URL = 'https://api.petfinder.com/v2'
 headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
 
+# token expires in 3600, but this api does not provide refresh token. 
+# I decied to call get_token function in each view function that requires API call so that we can avoid running into issue.
+# but below are possible solutions
+
+# from stackoverflow https://stackoverflow.com/questions/2697039/python-equivalent-of-setinterval
+
+# def setInterval(func,time):
+#     e = threading.Event()
+#     while not e.wait(time):
+#         func()
+
+# setInterval(get_token,3600)
+# option1 - maybe I can get datestamp when I get access token. Then if(ACCESS_TOKEN), check datetime to see if it's past 3600 seconds. if so, we need to get new token.
+# option2 - petfinder API wrapper for login support :https://github.com/aschleg/petpy
+
 # ==========================================================#
 
 CURR_USER_KEY = 'curr_user'
-
+pets_list= []
 orgs_list = []
+
 # ============================================================#
 #=== signup/login/logout g.user & Session assign handling ====#
 # ============================================================#
@@ -155,9 +151,9 @@ def logout():
 @app.route('/users/profile/<int:user_id>', methods=['GET', 'POST'])
 def show_edit_user(user_id):
     
-    # if g.user.id is not equial to user id:
-    #     flash('Please log in')
-    #     return redirect('/login')
+    if g.user.id != user_id:
+        flash('Please log in')
+        return redirect('/login')
     
     user = User.query.get_or_404(user_id)
     form = UserForm(obj=user)
@@ -174,9 +170,8 @@ def show_edit_user(user_id):
     return render_template('user_profile.html', form = form, user=user)
 
 # ============================================================#
-#========= End of User Signup & Login & Logout ===============#
+#========= End of User Signup & Login & Logout & User info update ===============#
 # ============================================================#
-
 
 @app.route("/")
 def root():
@@ -199,6 +194,8 @@ def home():
 def user_page(user_id):
     """show user profile including preference, favorite pets, maybe pets saved"""
     
+    ACCESS_TOKEN = get_token()
+
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/home")
@@ -208,7 +205,8 @@ def user_page(user_id):
     form=CommentForm()
 
     user = User.query.get_or_404(user_id)
-    fav_pets_id = [pet.pet_id for pet in FavoritePet.query.all()]
+    # userとFavoritepetの関係がModelで設定されていればもっと簡単にできるはず。
+    fav_pets_id = [pet.pet_id for pet in FavoritePet.query.filter_by(user_id = g.user.id)]
     fav_pets =[]
     for pet_id in fav_pets_id:
          response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
@@ -218,7 +216,7 @@ def user_page(user_id):
     comments = Comment.query.filter_by(user_id = g.user.id)
 
        
-    maybe_pets_id = [pet.pet_id for pet in MaybePet.query.all()]
+    maybe_pets_id = [pet.pet_id for pet in MaybePet.query.filter_by(user_id = g.user.id)]
     maybe_pets =[]
     for pet_id in maybe_pets_id:
          response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
@@ -234,12 +232,9 @@ def user_page(user_id):
 @app.route('/questions', methods=["GET", "POST"])
 def show_questions():
 
-    form = UserPreferenceForm()
+    ACCESS_TOKEN = get_token()
 
-    # res = requests.get(f'{API_BASE_URL}/types', headers=headers)
-    # data = res.json()
-    # pet_types =[(item['name'], item['name']) for item in data['types']]
-    # form.pet_type.choices = pet_types
+    form = UserPreferenceForm()
 
     if form.validate_on_submit():
         # if user not logged in, how do I do this?
@@ -263,11 +258,13 @@ def show_questions():
         match_data = response.json()
         list_of_animals = match_data['animals']
 
+          # ここでデータをSimplyfyしてpets_listにappendしたらどうか？
+        #   この時にOrgIDからOrg NameとURLを取得しておく
+
         for animal in list_of_animals:
             if len(animal['photos']) ==0:
                 list_of_animals.remove(animal)
         
-        # match_data =user_pref.show_matches
         if len(list_of_animals) == 0 :
             flash('No Match Found. Please Try Again.', 'danger')
             return redirect('/questions')
@@ -301,11 +298,9 @@ def add_fav():
         return flask.Response(response=json.dumps(return_data), status=201)
          
     else:
-        # response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': user_pref.pet_type, 'size': user_pref.size, 'gender': user_pref.gender, 'age': user_pref.age, 'location': user_pref.zipcode, 'limit': 50, 'status': 'adoptable'})
-        # match_data = response.json()
-        # list_of_animals = match_data['animals']
 
-        # ここでAPIコールしてanimalIDから得た情報でFavaritePetをDatabaseに追加する
+        # ここでpets_listの中からpetを探して、fav pet table に追加
+        # for loop 内で FavoritePet(pet info) db.session.add(favpet)までいれる 
         # 追加する情報は？
         # pet_id
         # imgurl
@@ -314,8 +309,8 @@ def add_fav():
         # location_city
         # location_state
         # organization_id
-
-        # get organization info 
+        # org name
+        # org url 
         
         favPet = FavoritePet(
         pet_id = received_data['animal'],
@@ -404,27 +399,6 @@ def add_pet_comments(pet_id):
 
     return flask.Response(response=json.dumps(return_data), status=201)
 
-# ========== add user comments of org to DB
-# @app.route('/comments/<int:pet_id>', methods=['POST'])
-# def add_pet_comments(pet_id):
-#     received_data=request.get_json()
-#     print(f"received_data{received_data}")
-#     return_data = {
-#         'status':'successful',
-#         'message': f'received:pet_id {received_data["animal"]}, comment:{received_data["comment"]}'
-#     }
-
-#     comment = Comment(
-#         user_id=g.user.id,
-#         pet_id =pet_id,
-#         comment=received_data['comment']
-#     )
-
-#     db.session.add(comment)
-#     db.session.commit()
-
-#     return flask.Response(response=json.dumps(return_data), status=201)
-
 
 # ==============org search ==============================
 @app.route('/org-search', methods=['GET'])
@@ -434,7 +408,8 @@ def show_search_page():
 
 @app.route('/org-results', methods=['GET'])
 def search_result():
-
+    
+    ACCESS_TOKEN = get_token()
     orgs_list = []
 
     user_query = request.args.get('q')
