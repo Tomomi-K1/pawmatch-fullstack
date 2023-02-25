@@ -11,7 +11,7 @@ import os
 
 from models import db, connect_db, User, UserPreference, FavoritePet, MaybePet, FavoriteOrg, Comment
 from forms import UserForm, LoginForm, UserPreferenceForm, CommentForm
-from config_info import API_KEY,API_SECRET, SECRET_KEY
+# from config_info import API_KEY,API_SECRET, SECRET_KEY
 
 # create the app
 app = Flask(__name__)
@@ -19,7 +19,7 @@ CORS(app)
 
 # configure the postgresql database, relative to the app instance folder
 # app.config['SECRET_KEY'] = SECRET_KEY
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', SECRET_KEY)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'SECRET_KEY')
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresqlcommit:///furmily_db'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL', 'postgresql:///furmily_db')
@@ -31,6 +31,11 @@ debug = DebugToolbarExtension(app)
 
 connect_db(app)
 # ============ API call requirements ======================#
+# needed to have this to store API key and secret on Heroku side rather than importing from config_info.py. Since config_info.py is in .gitignore to avoid secret being uploaded in github.
+API_KEY=os.environ.get('API_KEY', 'default_api_key') 
+API_SECRET=os.environ.get('API_SECRET', 'default_api_secret') 
+
+
 def get_token():
     res = requests.post('https://api.petfinder.com/v2/oauth2/token', data={'grant_type':'client_credentials', 'client_id': API_KEY, 'client_secret': API_SECRET})
     # ACCESS_TIME = datetime.now()
