@@ -124,10 +124,6 @@ class UserPreference(db.Model):
         nullable=False
     )
 
-    # breed = db.Column(
-    #     db.Text
-    # )
-
     size = db.Column(
         db.Text
     )
@@ -139,18 +135,6 @@ class UserPreference(db.Model):
     age = db.Column(
         db.Text
     )
-
-    # good_with_children = db.Column(
-    #     db.Text
-    # )
-
-    # house_trained = db.Column(
-    #     db.Text
-    # )
-
-    # special_need = db.Column(
-    #     db.Text
-    # )
 
     zipcode = db.Column(
         db.Integer
@@ -186,10 +170,6 @@ class FavoritePet(db.Model):
         nullable=False
     )
 
-    # datetime = db.Column(
-        
-    # )
-
     # favpetとUserのrelationshipを登録する
 
 # =================================== Maybe Pet class ====================================#        
@@ -217,6 +197,7 @@ class MaybePet(db.Model):
 
     # maybepetとUserのrelationshipを登録する
 # =================================== Favorite Organization class ====================================#
+# include this in future development
 class FavoriteOrg(db.Model):
 
     __tablename__ ='favorite_orgs'
@@ -257,13 +238,19 @@ class Comment(db.Model):
         nullable= False
     )    
 
-    org_id = db.Column(
-        db.Text
-    )
+    # org_id = db.Column(
+    #     db.Text
+    # )
+    # include organization comment maybe later
 
     pet_id = db.Column(
         db.Integer
     )
+    # fav_pet_id = db.Column(
+    #   db.integer, db.ForeignKey('favorite_pets.id', ondelete='cascade'))
+    
+    # maybe_pet_id = db.Column(
+    #   db.integer, db.ForeignKey('maybe_pets.id', ondelete='cascade'))
 
     comment= db.Column(
         db.Text

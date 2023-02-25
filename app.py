@@ -35,6 +35,7 @@ def get_token():
     return data['access_token']
 
 ACCESS_TOKEN = get_token()
+print(ACCESS_TOKEN)
 
 API_BASE_URL = 'https://api.petfinder.com/v2'
 headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
@@ -151,7 +152,7 @@ def logout():
 @app.route('/users/profile/<int:user_id>', methods=['GET', 'POST'])
 def show_edit_user(user_id):
     
-    if g.user.id != user_id:
+    if not g.user or g.user.id != user_id:
         flash('Please log in')
         return redirect('/login')
     
@@ -195,6 +196,7 @@ def user_page(user_id):
     """show user profile including preference, favorite pets, maybe pets saved"""
     
     ACCESS_TOKEN = get_token()
+    print(f'view funcition uwer_page :{ACCESS_TOKEN}')
 
     if not g.user:
         flash("Access unauthorized.", "danger")
@@ -209,9 +211,17 @@ def user_page(user_id):
     fav_pets_id = [pet.pet_id for pet in FavoritePet.query.filter_by(user_id = g.user.id)]
     fav_pets =[]
     for pet_id in fav_pets_id:
-         response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
-         data = response.json()
-         fav_pets.append(data['animal'])
+        try:
+            response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
+            data = response.json()
+            fav_pets.append(data['animal'])
+
+        except KeyError:
+            print(f'{pet_id} does not exit anymore')
+            FavoritePet.query.filter_by(pet_id = pet_id).delete()
+            db.session.commit()
+        #  ここにTry and error でもしすでにPET IDが消えている場合の対応をする
+
 
     comments = Comment.query.filter_by(user_id = g.user.id)
 
@@ -219,9 +229,14 @@ def user_page(user_id):
     maybe_pets_id = [pet.pet_id for pet in MaybePet.query.filter_by(user_id = g.user.id)]
     maybe_pets =[]
     for pet_id in maybe_pets_id:
-         response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
-         data = response.json()
-         maybe_pets.append(data['animal'])
+        try:
+            response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
+            data = response.json()
+            maybe_pets.append(data['animal'])
+        except KeyError:
+            print(f'{pet_id} does not exit anymore')
+            MaybePet.query.filter_by(pet_id = pet_id).delete()
+            db.session.commit()
     # make api calls to get data for each pets and store that in dictionary
     # each rendered animal will have comments section, delete button    
 
@@ -233,6 +248,7 @@ def user_page(user_id):
 def show_questions():
 
     ACCESS_TOKEN = get_token()
+    print(f'view funcition show_questions :{ACCESS_TOKEN}')
 
     form = UserPreferenceForm()
 
@@ -407,9 +423,10 @@ def show_search_page():
     return render_template('org_search.html')
 
 @app.route('/org-results', methods=['GET'])
-def search_result():
+def org_search_result():
     
     ACCESS_TOKEN = get_token()
+    f'view funcition irg_search_result :{ACCESS_TOKEN}'
     orgs_list = []
 
     user_query = request.args.get('q')

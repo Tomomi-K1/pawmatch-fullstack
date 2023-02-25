@@ -89,7 +89,7 @@ $petComment.on('click', 'button', function(e){
     // take comment and update the HTML page
     let commentSection = $(`.pet-comment-${pet_id} h3`);
     let newElem = $('<p>').text(comment);
-    commentSection.After(newElem);
+    commentSection.after(newElem);
     
     // clear entries
     $(`.data-${pet_id}`).find('.pet-textarea').val('')   
@@ -126,17 +126,6 @@ $petComment.on('click', 'button', function(e){
 
 
 //=============this is not working================== 
-
-$showMyPetBtn.click(function(e){
-    showMyPetBtn.hide()
-    $loader.show()
-    
-    if ($('document').find('.user-pets')){
-    $lodaer.hide()
-    $('.user-pets').show()
-    }
-})
-
 $searchStartBtn.click(function(e){
     $('.question-area').hide()
     $loader.show()
@@ -146,6 +135,18 @@ $searchStartBtn.click(function(e){
     $('.match-display-area').show()
     }
 })
+
+
+$showMyPetBtn.click(function(e){
+    $showMyPetBtn.hide()
+    $loader.show()
+    
+    if ($('document').find('.user-pets')){
+    $lodaer.hide()
+    $('.user-pets-area').show()
+    }
+})
+
 
 
 

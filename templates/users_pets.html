@@ -8,7 +8,7 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-    
+      <div class="users-pets-area">
         <h2>Your Favorite Pets</h2>
         <div class="liked-animal row row-cols-1 row-cols-sm-2 row-cols-md-4">
           {% for animal in fav_pets %}
@@ -34,7 +34,7 @@
                   <br>
                   <p>Description: {{animal['description']}}</p>
                   <p>Location: {{animal['contact']['address']['city']}}, {{animal['contact']['address']['state']}}</p>
-                  <p><a href="{{animal['_links']['organization']}}">Organization</a></p> 
+                  <p><a href="{{animal['url']}}">more info</a></p>  
                 </div>
 
                 <div class="pet-comment-{{animal['id']}}">
@@ -87,7 +87,7 @@
                   <br>
                   <p>Description: {{animal['description']}}</p>
                   <p>Location: {{animal['contact']['address']['city']}}, {{animal['contact']['address']['state']}}</p>
-                  <p><a href="{{animal['_links']['organization']}}">Organization</a></p> 
+                  <p><a href="{{animal['url']}}">more info</a></p>  
               </div>
               
               <div class="pet-comment-{{animal['id']}}">
@@ -113,5 +113,5 @@
           </div>
           {% endfor %}
         </div> 
-
+      </div>
 {% endblock %}
