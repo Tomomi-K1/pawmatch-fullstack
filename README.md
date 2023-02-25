@@ -1,5 +1,7 @@
 # Find Your Furmily - Paw Match
 
+Access deployed app from here: **[Paw Match](https://paw-match.herokuapp.com/)**
+
 #### 1. Goal
 
 This website will give a series of questions to narrow down the search for a potential pet from rescue organizations.
@@ -37,10 +39,8 @@ Password, username, and email.
 - Ask a series of questions to find out the user's preference for a pet.
 - Rather than a showing list of pets, this website will show a randomly chosen pet one by one up to 10 animals.
 - A User will choose yes, no, maybe on the pet shown. 
-- Website will create a list of animals with “yes” and “maybe”. Users can edit the lists and add comments to each pet. 
-- In the list, users would be able to see where those pets are located on the map. 
-- Users will be able to share their list with others.
-- Users can also rate and leave a comment about shelter or rescue organizations to share their opinions with others.
+- Website will create a list of animals with “yes” and “maybe”. -Users can edit the lists and add comments to each pet. 
+
 
 #### 8. User flow 
 
@@ -51,5 +51,6 @@ Password, username, and email.
 	
 #### 9. What features make my site more than CRUD? Stretch goals?
 
-potentially show the map of pets or shelter locations
-Show the current number of pets waiting to find forever homes.
+More than CRUD : having a logic behind to choose random 10 pets for users
+Stretch goal: potentially show the map of pets or shelter locations
+
