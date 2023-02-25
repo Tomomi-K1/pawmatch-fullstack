@@ -7,6 +7,7 @@ import requests, random
 from datetime import datetime
 import threading
 from flask_cors import CORS
+import os
 
 from models import db, connect_db, User, UserPreference, FavoritePet, MaybePet, FavoriteOrg, Comment
 from forms import UserForm, LoginForm, UserPreferenceForm, CommentForm
@@ -17,7 +18,8 @@ app = Flask(__name__)
 CORS(app)
 
 # configure the postgresql database, relative to the app instance folder
-app.config['SECRET_KEY'] = SECRET_KEY
+# app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', SECRET_KEY)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///furmily_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
