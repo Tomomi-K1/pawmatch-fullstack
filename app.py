@@ -282,8 +282,9 @@ def show_questions():
         response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': user_pref.pet_type, 'size': user_pref.size, 'gender': user_pref.gender, 'age': user_pref.age, 'location': user_pref.zipcode, 'limit': 50, 'status': 'adoptable'})
         match_data = response.json()
         list_of_animals = match_data['animals']
-
-          # ここでデータをSimplyfyしてpets_listにappendしたらどうか？
+        #try and errorを組み込む
+        
+        # ここでデータをSimplyfyしてpets_listにappendしたらどうか？
         #   この時にOrgIDからOrg NameとURLを取得しておく
 
         for animal in list_of_animals:
@@ -313,8 +314,13 @@ def add_fav():
     }
 
     # =====this logic is not working why???========
+    # previous code
+    # all_fav=FavoritePet.query.all()
+    # if FavoritePet.query.filter_by(pet_id=received_data['animal']) in all_fav:
+    # I need method (e.g. .all() or .first()) to fire the query after filter_by or filter.
+
     all_fav=FavoritePet.query.all()# get users fav pet, if aleady exist, don't add no action
-    if FavoritePet.query.filter_by(pet_id=received_data['animal']) in all_fav:
+    if FavoritePet.query.filter_by(pet_id=received_data['animal'].first()) in all_fav:
         return_data = {
         'status':'already in database',
         'message': f'received:{received_data["animal"]}'
@@ -356,7 +362,7 @@ def add_maybe():
     }
 
     all_maybe=MaybePet.query.all()
-    if MaybePet.query.filter_by(pet_id=received_data['animal']) in all_maybe:
+    if MaybePet.query.filter_by(pet_id=received_data['animal'].first()) in all_maybe:
         return_data = {
         'status':'already in database',
         'message': f'received:{received_data["animal"]}'
