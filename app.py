@@ -20,7 +20,7 @@ CORS(app)
 # configure the postgresql database, relative to the app instance folder
 # app.config['SECRET_KEY'] = SECRET_KEY
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'SECRET_KEY')
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresqlcommit:///furmily_db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///furmily_db'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL', 'postgresql:///furmily_db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -217,7 +217,7 @@ def user_page(user_id):
 
     user = User.query.get_or_404(user_id)
     # userとFavoritepetの関係がModelで設定されていればもっと簡単にできるはず。
-    fav_pets_id = [pet.pet_id for pet in FavoritePet.query.filter_by(user_id = g.user.id)]
+    fav_pets_id = [pet.pet_id for pet in FavoritePet.query.filter_by(user_id = g.user.id).all()]
     fav_pets =[]
     for pet_id in fav_pets_id:
         try:
@@ -235,7 +235,7 @@ def user_page(user_id):
     comments = Comment.query.filter_by(user_id = g.user.id)
 
        
-    maybe_pets_id = [pet.pet_id for pet in MaybePet.query.filter_by(user_id = g.user.id)]
+    maybe_pets_id = [pet.pet_id for pet in MaybePet.query.filter_by(user_id = g.user.id).all()]
     maybe_pets =[]
     for pet_id in maybe_pets_id:
         try:
