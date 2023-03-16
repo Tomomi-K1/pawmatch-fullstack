@@ -270,9 +270,6 @@ def show_questions():
         size = form.size.data,
         gender = form.gender.data,
         age = form.age.data,
-        # good_with_children = 'true' if form.good_with_children.data == True else 'false',
-        # house_trained = 'true' if form.house_trained.data == True else 'false',
-        # special_need = 'true' if form.special_need.data == True else 'false',
         zipcode = form.zipcode.data)
 
         
@@ -320,7 +317,7 @@ def add_fav():
     # I need method (e.g. .all() or .first()) to fire the query after filter_by or filter.
 
     all_fav=FavoritePet.query.all()# get users fav pet, if aleady exist, don't add no action
-    if FavoritePet.query.filter_by(pet_id=received_data['animal'].first()) in all_fav:
+    if FavoritePet.query.filter_by(pet_id=received_data['animal']).first() in all_fav:
         return_data = {
         'status':'already in database',
         'message': f'received:{received_data["animal"]}'
@@ -362,7 +359,7 @@ def add_maybe():
     }
 
     all_maybe=MaybePet.query.all()
-    if MaybePet.query.filter_by(pet_id=received_data['animal'].first()) in all_maybe:
+    if MaybePet.query.filter_by(pet_id=received_data['animal']).first() in all_maybe:
         return_data = {
         'status':'already in database',
         'message': f'received:{received_data["animal"]}'
