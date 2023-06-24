@@ -124,14 +124,12 @@ $petComment.on('click', 'button', function(e){
 // $orgSearch.on('click', 'button', )
 
 
-
-//=============this is not working================== 
 $searchStartBtn.click(function(e){
     $('.question-area').hide()
     $loader.show()
     
     if ($('document').find('.match-result')){
-    $lodaer.hide()
+    $loader.hide()
     $('.match-display-area').show()
     }
 })
@@ -142,7 +140,7 @@ $showMyPetBtn.click(function(e){
     $loader.show()
     
     if ($('document').find('.user-pets')){
-    $lodaer.hide()
+    $loader.hide()
     $('.user-pets-area').show()
     }
 })

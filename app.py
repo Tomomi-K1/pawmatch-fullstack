@@ -4,65 +4,62 @@ import json
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests, random
-from datetime import datetime
+from datetime import datetime, timedelta
 import threading
 from flask_cors import CORS
 import os
 
 from models import db, connect_db, User, UserPreference, FavoritePet, MaybePet, FavoriteOrg, Comment
 from forms import UserForm, LoginForm, UserPreferenceForm, CommentForm
-# from config_info import API_KEY,API_SECRET, SECRET_KEY
+from config_info import API_KEY,API_SECRET, SECRET_KEY
 
 # create the app
 app = Flask(__name__)
 CORS(app)
 
 # configure the postgresql database, relative to the app instance folder
-# app.config['SECRET_KEY'] = SECRET_KEY
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'SECRET_KEY')
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///furmily_db'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 'postgresql:///furmily_db')
+app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///furmily_db'
+
+##########use below for deployment ###########################
+# app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'SECRET_KEY')
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+#     'DATABASE_URL', 'postgresql:///furmily_db')
+#########################################################
+
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
 # ============ API call requirements ======================#
+##########use below for diployment ###########################
 # needed to have this to store API key and secret on Heroku side rather than importing from config_info.py. Since config_info.py is in .gitignore to avoid secret being uploaded in github.
-API_KEY=os.environ.get('API_KEY', 'default_api_key') 
-API_SECRET=os.environ.get('API_SECRET', 'default_api_secret') 
+# API_KEY=os.environ.get('API_KEY', 'default_api_key') 
+# API_SECRET=os.environ.get('API_SECRET', 'default_api_secret') 
+#########################################################
 
+# =========================================================#
+#  Necessary info for calling API 
+# =========================================================#
+API_BASE_URL = 'https://api.petfinder.com/v2'
 
 def get_token():
-    res = requests.post('https://api.petfinder.com/v2/oauth2/token', data={'grant_type':'client_credentials', 'client_id': API_KEY, 'client_secret': API_SECRET})
-    # ACCESS_TIME = datetime.now()
+    res = requests.post(f'{API_BASE_URL}/oauth2/token', 
+                        data={
+                            'grant_type':'client_credentials', 
+                            'client_id': API_KEY, 
+                            'client_secret': API_SECRET})
     data=res.json()
-    # ACCESS_TOKEN = data['access_token']
     return data['access_token']
 
-ACCESS_TOKEN = get_token()
-print(ACCESS_TOKEN)
-
-API_BASE_URL = 'https://api.petfinder.com/v2'
+ACCESS_TOKEN= get_token()
 headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
+print(f"top of app: token {ACCESS_TOKEN}, Access Time {ACCESS_TIME}")
 
-# token expires in 3600, but this api does not provide refresh token. 
-# I decied to call get_token function in each view function that requires API call so that we can avoid running into issue.
-# but below are possible solutions
-
-# from stackoverflow https://stackoverflow.com/questions/2697039/python-equivalent-of-setinterval
-
-# def setInterval(func,time):
-#     e = threading.Event()
-#     while not e.wait(time):
-#         func()
-
-# setInterval(get_token,3600)
-# option1 - maybe I can get datestamp when I get access token. Then if(ACCESS_TOKEN), check datetime to see if it's past 3600 seconds. if so, we need to get new token.
-# option2 - petfinder API wrapper for login support :https://github.com/aschleg/petpy
 
 # ==========================================================#
 
@@ -84,7 +81,7 @@ def add_user_to_g():
 
     else:
         g.user = None
-
+    
 
 def do_login(user):
     """Log in user."""
@@ -150,14 +147,16 @@ def login():
 
     return render_template('login.html', form=form)
 
+# ============ LOG OUT User  ======================#
 @app.route('/logout')
 def logout():
-
+    """logout a user"""
     do_logout()
 
     flash('You have logged out successfully', 'success')
     return redirect('/home')
 
+# ============ Update User Info ======================#
 @app.route('/users/profile/<int:user_id>', methods=['GET', 'POST'])
 def show_edit_user(user_id):
     
@@ -179,9 +178,9 @@ def show_edit_user(user_id):
     
     return render_template('user_profile.html', form = form, user=user)
 
-# ============================================================#
+# ===============================================================================#
 #========= End of User Signup & Login & Logout & User info update ===============#
-# ============================================================#
+# ===============================================================================#
 
 @app.route("/")
 def root():
@@ -190,74 +189,22 @@ def root():
 
 @app.route('/home')
 def home():
+    """
     #===== show adoptable pet available, but need to think of way to count all available animals since API show only up to 100. 
     # res = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'status': 'adoptable'})
     # data=res.json()
     # num =len(data['animals'])
+    """
     if g.user:
         return redirect('/questions')
     
     return render_template('home.html')
 
-# ================ Show all Fav and maybe pet =================================
-@app.route('/pets/users/<int:user_id>')
-def user_page(user_id):
-    """show user profile including preference, favorite pets, maybe pets saved"""
-    
-    ACCESS_TOKEN = get_token()
-    print(f'view funcition uwer_page :{ACCESS_TOKEN}')
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/home")
-    # do I need to put if g.user_id does not equal  to user_id?
-
-
-    form=CommentForm()
-
-    user = User.query.get_or_404(user_id)
-    # userとFavoritepetの関係がModelで設定されていればもっと簡単にできるはず。
-    fav_pets_id = [pet.pet_id for pet in FavoritePet.query.filter_by(user_id = g.user.id).all()]
-    fav_pets =[]
-    for pet_id in fav_pets_id:
-        try:
-            response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
-            data = response.json()
-            fav_pets.append(data['animal'])
-
-        except KeyError:
-            print(f'{pet_id} does not exit anymore')
-            FavoritePet.query.filter_by(pet_id = pet_id).delete()
-            db.session.commit()
-        #  ここにTry and error でもしすでにPET IDが消えている場合の対応をする
-
-
-    comments = Comment.query.filter_by(user_id = g.user.id)
-
-       
-    maybe_pets_id = [pet.pet_id for pet in MaybePet.query.filter_by(user_id = g.user.id).all()]
-    maybe_pets =[]
-    for pet_id in maybe_pets_id:
-        try:
-            response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
-            data = response.json()
-            maybe_pets.append(data['animal'])
-        except KeyError:
-            print(f'{pet_id} does not exit anymore')
-            MaybePet.query.filter_by(pet_id = pet_id).delete()
-            db.session.commit()
-    # make api calls to get data for each pets and store that in dictionary
-    # each rendered animal will have comments section, delete button    
-
-    return render_template('users_pets.html', user=user, fav_pets=fav_pets, maybe_pets=maybe_pets, comments = comments, form=form)
-
 
 #============= Get user's preference and show result ======================= 
 @app.route('/questions', methods=["GET", "POST"])
 def show_questions():
-
-    ACCESS_TOKEN = get_token()
-    print(f'view funcition show_questions :{ACCESS_TOKEN}')
+    """Questions to a user to find pets and show list of matching pets"""
 
     form = UserPreferenceForm()
 
@@ -275,10 +222,24 @@ def show_questions():
         
         db.session.add(user_pref)
         db.session.commit()
+    
+        try:
+            ACCESS_TOKEN= get_token()
+            response = requests.get(f'{API_BASE_URL}/animals', 
+                                    headers=headers, 
+                                    params={
+                                        'type': user_pref.pet_type, 
+                                        'size': user_pref.size, 
+                                        'gender': user_pref.gender, 
+                                        'age': user_pref.age, 
+                                        'location': user_pref.zipcode, 
+                                        'limit': 50, 
+                                        'status': 'adoptable'})
+            match_data = response.json()
+            list_of_animals = match_data['animals']
 
-        response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': user_pref.pet_type, 'size': user_pref.size, 'gender': user_pref.gender, 'age': user_pref.age, 'location': user_pref.zipcode, 'limit': 50, 'status': 'adoptable'})
-        match_data = response.json()
-        list_of_animals = match_data['animals']
+        except KeyError:
+            print(f"no animal found {response}")
         #try and errorを組み込む
         
         # ここでデータをSimplyfyしてpets_listにappendしたらどうか？
@@ -376,6 +337,61 @@ def add_maybe():
 
     return flask.Response(response=json.dumps(return_data), status=201)
 
+# ================ Show all Fav and maybe pet =================================
+@app.route('/pets/users/<int:user_id>')
+def user_page(user_id):
+    """show user profile including preference, favorite pets, maybe pets saved"""
+    
+    ACCESS_TOKEN= get_token()
+    print(f'view function user_page :{ACCESS_TOKEN}')
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/home")
+    # do I need to put if g.user_id does not equal  to user_id?
+
+
+    form=CommentForm()
+
+    user = User.query.get_or_404(user_id)
+    # userとFavoritepetの関係がModelで設定されていればもっと簡単にできるはず。
+    fav_pets_id = [pet.pet_id for pet in FavoritePet.query.filter_by(user_id = g.user.id).all()]
+    fav_pets =[]
+    
+    
+
+    for pet_id in fav_pets_id:
+        try:
+            response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
+            data = response.json()
+            fav_pets.append(data['animal'])
+
+        except KeyError:
+            print(f'{pet_id} does not exit anymore')
+            FavoritePet.query.filter_by(pet_id = pet_id).delete()
+            db.session.commit()
+        #  ここにTry and error でもしすでにPET IDが消えている場合の対応をする
+
+
+    comments = Comment.query.filter_by(user_id = g.user.id)
+
+       
+    maybe_pets_id = [pet.pet_id for pet in MaybePet.query.filter_by(user_id = g.user.id).all()]
+    maybe_pets =[]
+    for pet_id in maybe_pets_id:
+        try:
+            response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
+            data = response.json()
+            maybe_pets.append(data['animal'])
+        except KeyError:
+            print(f'{pet_id} does not exit anymore')
+            MaybePet.query.filter_by(pet_id = pet_id).delete()
+            db.session.commit()
+    # make api calls to get data for each pets and store that in dictionary
+    # each rendered animal will have comments section, delete button    
+
+    return render_template('users_pets.html', user=user, fav_pets=fav_pets, maybe_pets=maybe_pets, comments = comments, form=form)
+
 
 # ============= DELETE user's favorite & maybe pet===========================
 @app.route('/delete-fav', methods=['POST'])
@@ -436,20 +452,18 @@ def show_search_page():
 
 @app.route('/org-results', methods=['GET'])
 def org_search_result():
-    
-    ACCESS_TOKEN = get_token()
-    f'view funcition irg_search_result :{ACCESS_TOKEN}'
+    ACCESS_TOKEN= get_token()
     orgs_list = []
 
     user_query = request.args.get('q')
     response = requests.get(f'{API_BASE_URL}/organizations', headers=headers, params={'query': user_query})
     data = response.json()
     orgs = data['organizations']
-    print(f'user_query:{user_query} orgs:{orgs}')
+    # print(f'user_query:{user_query} orgs:{orgs}')
     
     orgs_list =[{'id': org['id'], 'name': org['name'], 'phone': org['phone'], 'city': org['address']['city'], 'state': org['address']['state'], 'url': org['url'], 'img_url': org['photos'][0]['small'] if len(org['photos']) != 0 else "None" } for org in orgs]
     
-    print(f'orgs_list:{orgs_list}')
+    # print(f'orgs_list:{orgs_list}')
 
     return render_template('org_results.html', user_query=user_query, orgs_list=orgs)
     
