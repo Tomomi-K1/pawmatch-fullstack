@@ -46,20 +46,30 @@ connect_db(app)
 #  Necessary info for calling API 
 # =========================================================#
 API_BASE_URL = 'https://api.petfinder.com/v2'
+ACCESS_TOKEN = None
+EXPIRES_IN = None
+headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
 
 def get_token():
-    res = requests.post(f'{API_BASE_URL}/oauth2/token', 
-                        data={
-                            'grant_type':'client_credentials', 
-                            'client_id': API_KEY, 
-                            'client_secret': API_SECRET})
-    data=res.json()
-    return data['access_token']
+    # if I want to reassign global variable, we need use keyword "global"
+    global ACCESS_TOKEN 
+    global EXPIRES_IN
+    global headers 
+    print(f'inside get_token fnc. start Access_token: {ACCESS_TOKEN},  Expires_in :{EXPIRES_IN}')
+    
+    if EXPIRES_IN is None or EXPIRES_IN <= datetime.now() :
+        
+        res = requests.post(f'{API_BASE_URL}/oauth2/token', 
+                            data={
+                                'grant_type':'client_credentials', 
+                                'client_id': API_KEY, 
+                                'client_secret': API_SECRET})
+        data=res.json()
+        ACCESS_TOKEN = data['access_token']
+        EXPIRES_IN = datetime.now() + timedelta(seconds=data['expires_in'])
+        headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
 
-ACCESS_TOKEN= get_token()
-headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
-print(f"top of app: token {ACCESS_TOKEN}, Access Time {ACCESS_TIME}")
-
+    print(f'inside get_token fnc.: end: Access_token: {ACCESS_TOKEN},  Expires_in :{EXPIRES_IN}')
 
 # ==========================================================#
 
@@ -224,7 +234,8 @@ def show_questions():
         db.session.commit()
     
         try:
-            ACCESS_TOKEN= get_token()
+            get_token()
+            print(f'inside questions route:did get token ran? {ACCESS_TOKEN}, {EXPIRES_IN}')
             response = requests.get(f'{API_BASE_URL}/animals', 
                                     headers=headers, 
                                     params={
@@ -240,7 +251,9 @@ def show_questions():
 
         except KeyError:
             print(f"no animal found {response}")
-        #try and errorを組み込む
+            flash('No Match Found. Please Try Again.', 'danger')
+            return redirect('/questions')
+       
         
         # ここでデータをSimplyfyしてpets_listにappendしたらどうか？
         #   この時にOrgIDからOrg NameとURLを取得しておく
@@ -342,8 +355,8 @@ def add_maybe():
 def user_page(user_id):
     """show user profile including preference, favorite pets, maybe pets saved"""
     
-    ACCESS_TOKEN= get_token()
-    print(f'view function user_page :{ACCESS_TOKEN}')
+    get_token()
+    print(f'inside show all fav and maybe pets. Token: {ACCESS_TOKEN}, Expires: {EXPIRES_IN}')
 
     if not g.user:
         flash("Access unauthorized.", "danger")
@@ -452,7 +465,8 @@ def show_search_page():
 
 @app.route('/org-results', methods=['GET'])
 def org_search_result():
-    ACCESS_TOKEN= get_token()
+    get_token()
+    print(f'inside org search. Token: {ACCESS_TOKEN}, Expires: {EXPIRES_IN}')
     orgs_list = []
 
     user_query = request.args.get('q')
