@@ -5,3 +5,6 @@
 - [ ] reduce the chocies of animals?
 - [ ] remove Maybe categories
 - [ ] save minimum pet data in database to show a pet on favorite pets page so there will be less external API calls.
+- [ ] loader is not showing up
+- [ ] make all matched pet's picture and card size the same. Only PetName on the photo. Keep the card size the same
+- [ ] change homepage design

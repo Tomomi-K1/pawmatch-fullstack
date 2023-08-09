@@ -84,3 +84,25 @@ li{
   } */
 
   .card{box-shadow:5px 5px #aeaa92;}
+
+   /* match_result.html */
+   .matched-pet  > img{
+    width: 100%;
+    height: 300px;
+    object-fit: contain;
+    object-position: center;
+   }
+   .matched-card-area{
+    position:relative;
+   }
+   .matched-pet-card {
+    position:absolute;
+   }
+
+   /* コレデイメージサイズコントロールデキル？ */
+   /* .img{
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    object-position: center;
+   } */

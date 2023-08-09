@@ -9,13 +9,13 @@
 {# ======= main content area ======== #}
 {% block content %}
 <div class="match-display-area row justify-content-md-center">
-  <div class="col-md-7 col-lg-7">
+  <div class="col-md-7 col-lg-7 matched-card-area">
     {% for animal in list_of_animals %}
     
-    <div class="card data-{{animal['id']}}">
+    <div class="card data-{{animal['id']}} matched-pet-card">
     <div class="matched-pet card-body">
     <h1 class="card-title">{{animal['name']}}</h1>
-        <div class="img">
+      
         <!-- <h3>Like</h3> -->
         <!-- {% for photo in animal['photos'] %}
         <img src="{{photo['large']}}" alt="{{animal['species']}}">
@@ -23,9 +23,9 @@
         {% if animal['photos'] %}
         <img src="{{animal['photos'][0]['medium']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
             {% else %}
-        <img src="default.jpg" alt="no picture">
+        <img src="../static/images/default.jpg" alt="no picture">
         {% endif %}   
-        </div>
+       
         <div class="description">
             <h3>About {{animal['name']}}</h3>
             <p>{{animal['type']}} {{animal['breed']}} {{animal['age']}} {{animal['gender']}} {{animal['size']}}</p>
@@ -37,17 +37,17 @@
             <h3>Do you want to adopt {{animal['name']}}?</h3>
             <div>
                 <form action="/likes" class="form form-user-likes"> 
-                    <button type="submit" class="favorite btn btn-warning" data-animal="{{animal['id']}}">I want to adopt {{animal['name']}}!</buttton>
+                    <button type="submit" class="favorite btn btn-warning" data-animal="{{animal['id']}}">I want to adopt {{animal['name']}}!</button>
                 </form>
             </div>
             <div>
                 <form action="/maybe" class="form form-user-maybe">    
-                    <button class="maybe btn btn-success" data-animal="{{animal['id']}}"> Not sure, Maybe?</buttton>
+                    <button class="maybe btn btn-success" data-animal="{{animal['id']}}"> Not sure, Maybe?</button>
                 </form>
             </div>
             <div>
                 <form class="form form-user-no">
-                    <button class="no btn btn-light" data-animal="{{animal['id']}}"> No </buttton>
+                    <button class="no btn btn-light" data-animal="{{animal['id']}}"> No </button>
                 </form>
             </div>
             

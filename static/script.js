@@ -125,17 +125,19 @@ $petComment.on('click', 'button', function(e){
 
 
 $searchStartBtn.click(function(e){
-    $('.question-area').hide()
-    $loader.show()
+    console.debug(`loader working?`, $searchStartBtn);
+    $('.question-area').hide();
+    $loader.show();
     
     if ($('document').find('.match-result')){
-    $loader.hide()
-    $('.match-display-area').show()
+        $loader.hide();
+        $('.match-display-area').show();
     }
 })
 
 
 $showMyPetBtn.click(function(e){
+    console.debug(`loader working?`)
     $showMyPetBtn.hide()
     $loader.show()
     
