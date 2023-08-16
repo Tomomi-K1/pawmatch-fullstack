@@ -12,11 +12,11 @@ class LoginForm(FlaskForm):
     password =PasswordField('Password', validators=[DataRequired(), Length(min=6)])
 
 class UserPreferenceForm(FlaskForm):
-    pet_type = RadioField('Type of Pet', choices=[ ("Dog", "Dog"), ("Cat","Cat"), ("Rabbit", "Rabbit"), ("Small & Furry","Small & Furry"), ("Horse", "Horse"), ("Bird", "Bird"), ("Scales, Fins & Other", "Scales, Fins & Other"), ("Barnyard","Barnyard")])
+    pet_type = SelectField('Type of Pet', choices=[ ("Dog", "Dog"), ("Cat","Cat"), ("Rabbit", "Rabbit"), ("Bird", "Bird"), ("Small & Furry","Small & Furry")])
     # breed = SelectField('Breed')
-    size = RadioField('Size', choices=[('small','small'), ('medium','medium'), ('large','large'), ('xlarge','xlarge')])
-    gender = RadioField('Gender',choices=[('male','male'), ('female','female')])
-    age = RadioField('Age', choices=[('baby','baby'), ('young','young'), ('adult','adult'), ('senior','senior')])
+    size = SelectField('Size', choices=[('small','Small'), ('medium','Medium'), ('large','Large'), ('xlarge','XLarge')])
+    gender = SelectField('Gender',choices=[('male','Male'), ('female','Female')])
+    age = SelectField('Age', choices=[('baby','Baby'), ('young','Young'), ('adult','Adult'), ('senior','Senior')])
     # good_with_children = BooleanField('Good with Children', default =False)
     # house_trained = BooleanField('House trained', default =False)
     # special_need = BooleanField('Special need', default =False)

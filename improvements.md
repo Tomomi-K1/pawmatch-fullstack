@@ -8,3 +8,6 @@
 - [ ] loader is not showing up
 - [ ] make all matched pet's picture and card size the same. Only PetName on the photo. Keep the card size the same
 - [ ] change homepage design
+- [ ] add map view for organization search
+- [ ] put attribution for icon and picture
+
