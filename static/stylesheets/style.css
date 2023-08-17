@@ -1,3 +1,10 @@
+nav{
+  background-color: #FEDA5B;
+  -webkit-box-shadow: 0px 8px 23px -11px rgba(176,176,176,1);
+  -moz-box-shadow: 0px 8px 23px -11px rgba(176,176,176,1);
+  box-shadow: 0px 8px 23px -11px rgba(176,176,176,1);
+}
+
 .form-group{
     margin-bottom: 10px;
 }
@@ -7,7 +14,8 @@
 }
 
 .main-area{
-    margin-top: 20px;
+   margin: auto;
+   padding:0;
 }
 
 .hidden{
@@ -18,91 +26,242 @@ li{
     list-style-type: none;
 }
 
-/*==== loading spinner=== */
+footer a:link{
+  text-decoration: none;
+  color: white;
+}
+footer a:visited{
+  text-decoration: none;
+  color: white;
+}
+
+footer a:hover{
+  text-decoration: underline;
+}
+
+.card{
+  -webkit-box-shadow: 4px 7px 23px 0px rgba(0,0,0,0.3);
+  -moz-box-shadow: 4px 7px 23px 0px rgba(0,0,0,0.3);
+  box-shadow: 4px 7px 23px 0px rgba(0,0,0,0.3);
+}
+
+  /*Photo by <a href="https://unsplash.com/@victor_vector?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Victor Grabarczyk</a> on <a href="https://unsplash.com/photos/N04FIfHhv_k?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+  */
+/* =====home.html ====== */
+  
+.home-container{
+  
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height:80vh;
+  background-image: url(../images/victor-grabarczyk-resized.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.home-furmily{
+  font-family: 'Kaushan Script', cursive;
+}
+.home-hero-h1{
+  width: 100%;
+  font-size: 1.2rem;
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px #2b1313 ;
+  margin-top: 30px;
+}
+.home-hero-p{
+  width: 100%;
+  font-size: 0.8rem;
+  text-align: center;
+  color: white;
+  text-shadow: 1px 1px #727272 ;
+}
+
+.home-form{
+  position: absolute;
+  bottom: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.home-footer{
+  background-color:#402B03 ;
+  width: 100%;
+  height: 40px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-footer-p{
+  color: white;
+  margin: 0;
+}
+
+@media only screen and (min-width: 768px) {
+  /* .home-container{
+    width: 100%;
+    height:90vh;
+  } */
+  .home-hero-h1{
+      font-size: 1.5rem;
+  }
+  .home-hero-p{
+    font-size: 1rem;
+  }
+}
+
+
+@media only screen and (min-width: 992px) {
+    /* .home-container{
+      width: 100%;
+      height:100vh;
+    } */
+    .home-hero-h1{
+      font-size: 1.8rem;
+    }
+    .home-hero-p{
+      font-size: 1.2rem;
+    }
+
+    .matched-pet_outer{
+      
+      height: 800px;
+    }
+}
+
+
+/* ===== Matched_pet.html ====== */
+.matched-pet_h2{
+  padding: 20px;
+  text-align: center;
+}
+
+#matched-pet_outline{
+    /* width: 300px; */
+    /* width: 70vw; */
+    width: 100%;
+    height: 500px;
+    /* border: 3px red solid; */
+    border-radius: 10px;
+    position: relative;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.matched-pet_outer{
+  /* width: 300px; */
+  width: 100%;
+  /* height: 400px; */
+  height: 500px;
+  border-radius: 10px;
+  position:absolute;
+  background-color: aliceblue;
+}
+
+.matched-pet_div-p{
+  width: 100%;
+  text-align: center;
+  /* width: 300px; */
+  height:100px;
+  position: absolute;
+  bottom: 0;
+  background: rgba(65, 65, 65, 0.3);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.matched-pet_div-p  p, .matched-pet_div-p  h6{
+  color: white
+}
+
+.matched-pet_p{
+    white-space:nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.matched-pet_img{
+    width:100%;
+    height:100%;
+    border-radius: 10px;
+    object-fit: cover;
+    object-position: center;   
+}
+
+.move-left{
+    transform: translate(-500px);
+    transition: .8s;
+}
+
+.move-right{
+    transform: translate(500px);
+    transition: .8s;
+}
+
+/*======================= loading spinner==================== */
 /* by Angela Delise https://www.youtube.com/watch?v=zAbnlisUFZE*/
 
 .loader {
-    margin-top: 50px;
-    /* display:flex; */
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  
-  }
-  
-  .loader div{
-    margin: 10px;
-    width: 20px;
-    height: 20px;
-    /* background-color: grey; */
-    /* border: 2px solid grey; */
-    border-radius: 50%;
-    animation: scaling 3s  infinite;
-  }
-  
-  
-  
-  @keyframes scaling {
-    0%, 100%{
-      /* opacity: 100%; */
-      transform:scale(0.2);
-      background-color: darkblue;
-    }
-  
-    50%{
-      /* opacity: 0%; */
-      transform:scale(1);
-      background-color:skyblue;
-    }
-  }
-  
-  div:nth-child(0){
-    animation-delay: 0s;
-  }
-  div:nth-child(1){
-    animation-delay: 0.2s;
-  }
-  div:nth-child(2){
-    animation-delay: 0.4s;
-  }
-  div:nth-child(3){
-    animation-delay: 0.6s;
-  }
-  div:nth-child(4){
-    animation-delay: 0.8s;
-  }
-  div:nth-child(5){
-    animation-delay: 1s;
-  }
-  div:nth-child(6){
-    animation-delay: 1.2s;
-  }
-  
-  /* user profile */
-  /* .liked-animal{
-    background-color: pink;
-  } */
+  margin-top: 50px;
+  /* display:flex; */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 
-  .card{box-shadow:3px 3px #727272;}
+}
 
-   /* match_result.html */
-   .matched-pet  > img{
-    width: 100%;
-    height: 300px;
-    object-fit: contain;
-    object-position: center;
-   }
-   .matched-card-area{
-    position:relative;
-   }
-   .matched-pet-card {
-    position:absolute;
-   }
+.loader div{
+  margin: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: scaling 3s  infinite;
+}
 
-   /* コレデイメージサイズコントロールデキル？ */
-   /* .img{
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-    object-position: center;
-   } */
+@keyframes scaling {
+  0%, 100%{
+    /* opacity: 100%; */
+    transform:scale(0.2);
+    background-color: darkblue;
+  }
+
+  50%{
+    /* opacity: 0%; */
+    transform:scale(1);
+    background-color:skyblue;
+  }
+}
+
+div:nth-child(0){
+  animation-delay: 0s;
+}
+div:nth-child(1){
+  animation-delay: 0.2s;
+}
+div:nth-child(2){
+  animation-delay: 0.4s;
+}
+div:nth-child(3){
+  animation-delay: 0.6s;
+}
+div:nth-child(4){
+  animation-delay: 0.8s;
+}
+div:nth-child(5){
+  animation-delay: 1s;
+}
+div:nth-child(6){
+  animation-delay: 1.2s;
+}

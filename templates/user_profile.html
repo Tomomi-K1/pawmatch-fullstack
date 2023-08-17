@@ -8,26 +8,27 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-<div class="row justify-content-md-center">
+<div class="row justify-content-md-center p-5 mt-5">
     <div class="col-md-7 col-lg-5">
-      <h1>Your Info</h1>
-      <p>if you want to update your info, simply edit below and click Update.</p>
-      <form method="POST" action="/users/profile/{{user.id}}" id="user-{{g.user.id}}" class="update-form">
-        {{ form.hidden_tag() }}
+      <div class="card p-4">
+        <h1>Your Info</h1>
+        <p>if you want to update your info, simply edit below and click Update.</p>
+        <form method="POST" action="/users/profile/{{user.id}}" id="user-{{g.user.id}}" class="update-form">
+          {{ form.hidden_tag() }}
 
-        {% for field in form if field.widget.input_type != 'hidden' %}
-        <!-- even though I applied from-group margin bottom was not applied why? I tried adding m-b-1 which means margin bottom -->
-        <div class="form-group">
-          {{field.label}}
-          {{ field(class="form-control") }}
-          {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
+          {% for field in form if field.widget.input_type != 'hidden' %}
+          <div class="form-group">
+            {{field.label}}
+            {{ field(class="form-control") }}
+            {% for error in field.errors %}
+              <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+          </div>
           {% endfor %}
-        </div>
-        {% endfor %}
-  
-        <button class="btn btn-warning btn-block">Update</button>
-      </form>
+    
+          <button class="btn btn-warning btn-block">Update</button>
+        </form>
+      </div>
     </div>
   </div>
 

@@ -10,4 +10,5 @@
 - [ ] change homepage design
 - [ ] add map view for organization search
 - [ ] put attribution for icon and picture
-
+- [ ] add logic to prevent search with empty query
+- [ ] how do I handle loader after form validation goes through? now hiding screen once button is clicked but validation does not show

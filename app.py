@@ -125,13 +125,11 @@ def signup():
                 password=form.password.data
             )
             db.session.commit()
-        
+            do_login(user)
+            return redirect('/questions')  
         except IntegrityError:
             flash("Username already taken", 'danger')
-
-        do_login(user)
-
-        return redirect('/questions')
+            return render_template('signup.html', form=form)     
 
     else:
         return render_template('signup.html', form=form)
@@ -248,7 +246,7 @@ def show_questions():
                                         'status': 'adoptable'})
             match_data = response.json()
             list_of_animals = match_data['animals']
-
+            print('list_of_animals 50 pulled')
         except KeyError:
             print(f"no animal found {response}")
             flash('No Match Found. Please Try Again.', 'danger')
@@ -268,7 +266,7 @@ def show_questions():
         elif len(list_of_animals) > 10:
             list_of_animals= random.sample(list_of_animals, 10) # randomly choose 10 from the list and make new list
             return render_template('match_result.html', list_of_animals=list_of_animals)            
-        
+        print('passed list_of_animals to html')
         return render_template('match_result.html', list_of_animals=list_of_animals)
 
     return render_template('questions.html', form=form)

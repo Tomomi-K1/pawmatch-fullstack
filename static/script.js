@@ -99,45 +99,21 @@ $petComment.on('click', 'button', function(e){
     console.log(response)
 })
 
-// adding comment on org
-// $orgComment.on('click', 'button', function(e){
-//     e.preventDefault();
-//     let org_id=e.target.dataset.org
-//     let comment = $(`.data-${org_id}`).find('.org-textarea').val()
-        
-//     // call to backend to add a comment to database
-//     let response =axios({method: 'post', url:`/comments/${org_id}`, data:{org: org_id, comment:comment}})
-
-//     // take comment and update the HTML page
-//     let commentSection = $(`.org-comment-${org_id} h3`);
-//     let newElem = $('<p>').text(comment);
-//     commentSection.After(newElem);
-    
-//     // clear entries
-//     $(`.data-${org_id}`).find('.org-textarea').val('')   
-    
-
-//     console.log(comment)
-//     console.log(response)
-// })
-
-// $orgSearch.on('click', 'button', )
-
-
 $searchStartBtn.click(function(e){
     console.debug(`loader working?`, $searchStartBtn);
-    $('.question-area').hide();
-    $loader.show();
+    console.log(e)
+    // $('.question-area').hide();
+    // $loader.show();
     
-    if ($('document').find('.match-result')){
-        $loader.hide();
-        $('.match-display-area').show();
-    }
+    // if ($('document').find('.match-result')){
+    //     $loader.hide();
+    //     $('.match-display-area').show();
+    // }
 })
 
 
 $showMyPetBtn.click(function(e){
-    console.debug(`loader working?`)
+    console.debug(`loader working? loader:${$loader}`)
     $showMyPetBtn.hide()
     $loader.show()
     
@@ -147,7 +123,44 @@ $showMyPetBtn.click(function(e){
     }
 })
 
+//============matched_pet=======//
 
+let yBtn = document.getElementById('matched-pet_btn-yes');
+let nBtn = document.getElementById('matched-pet_btn-no');
+let container = document.getElementById('matched-pet_outline');
+let body = document.getElementsByTagName('body');
+
+yBtn?.addEventListener('click',handleClick);
+nBtn?.addEventListener('click',handleClick);
+
+function handleClick(e){
+    let lastItem = container.lastElementChild;
+    let userId = container.dataset.user;
+    console.log(`userId`,userId)
+    console.log(lastItem)
+    setTimeout(()=>{
+        lastItem.remove(); 
+        if(container.children.length === 0){
+            console.log(`container is empty`)
+            $matchDisplayArea.hide();
+            $loader.show();
+            document.location.href =`/pets/users/${userId}`
+        }        
+    }, 800);
+
+    if(e.target.id =='matched-pet_btn-yes'){
+        if(lastItem.classList.contains('move-left')){
+            lastItem.classList.remove('move-left')
+        }
+        lastItem.classList.add('move-right')
+    } else if(e.target.id =='matched-pet_btn-no'){
+        if(lastItem.classList.contains('move-right')){
+            lastItem.classList.remove('move-right')
+        }
+        lastItem.classList.add('move-left')
+    }
+    console.log(e.target.id);
+}
 
 
 
