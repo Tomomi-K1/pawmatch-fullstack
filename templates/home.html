@@ -8,17 +8,22 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-    <h1>Let's find you a new Furmily member!</h1>
-    <form action="/signup">
-        <button class="ready-btn btn btn-warning"> Yes, I'm Ready! Sign Me Up! </button>
-    </form>
+    <div class="home-container">
+       
+        <h1 class="home-hero-h1">Find your <span class="home-furmily">Furmily</span> Today!</h1>
+        <p class="home-hero-p">Search pets from shelters and rescues.</p>
+        
+        <di class="home-form">
+        <form  action="/signup">
+            <button class="ready-btn btn btn-secondary"> Signup </button>
+        </form>
 
-    <form action="/login">
-        <button class="ready-btn btn btn-warning"> I'm a Member already. Log Me In!</button>
-    </form>
-
-    <!-- <form action="/questions">
-        <button class="ready-btn btn btn-warning"> Yes, I'm Ready! Sign Me Up! </button>
-    </form> -->
-    <!-- <h1> {{num}} pets need a new home</h1> -->
+        <form action="/login">
+            <button class="ready-btn btn btn-secondary"> Login </button>
+        </form>
+        </di>
+    </div>
+    <footer class="home-footer">
+        <p class="home-footer-p">Made with ❤️ by <a href="https://github.com/Tomomi-K1">Tomomi Kosaka</a></p>
+    </footer>
 {% endblock %}
