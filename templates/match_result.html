@@ -10,22 +10,22 @@
 {% block content %}
 <div class="match-display-area row justify-content-md-center">
   <h2 class="matched-pet_h2"> Do you want to adopt?</h2>
-  <div class="col-md-7 col-lg-7 matched-card-area mt-2">
+  <div class="col-md-7 col-lg-4 matched-card-area mt-2">
     <div id="matched-pet_outline" data-user={{g.user.id}}>
     {% for animal in list_of_animals %}
     
     
-        <div class="matched-pet_outer">
+        <div class="matched-pet_outer" data-animal="{{animal['id']}}">
 
             {% if animal['photos'] %}
-            <img src="{{animal['photos'][0]['medium']}}" class="matched-pet_img" alt="{{animal['species']}}">
+            <img src="{{animal['photos'][0]['large']}}" class="matched-pet_img" alt="{{animal['species']}}">
                 {% else %}
             <img src="../static/images/default.jpg" class="matched-pet_img" alt="no picture">
             {% endif %}   
             <div class="matched-pet_div-p">
                 <h6>{{animal['name']}}</h6>
                 <div>
-                <i class="fa-sharp fa-regular fa-location-dot"></i><p class="matched-pet_p">{{animal['contact']['address']['city']}}</p>
+                  <p class="matched-pet_p"><i class="fa-solid fa-location-dot" style="color: #ffffff;"></i> {{animal['contact']['address']['city']}}</p>
                 </div>
             </div>
         </div>

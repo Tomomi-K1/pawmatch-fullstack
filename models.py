@@ -31,13 +31,7 @@ class User(db.Model):
     )
 
     username = db.Column(
-        db.String(20),
-        nullable=False,
-        unique=True,
-    )
-
-    email = db.Column(
-        db.Text,
+        db.String(25),
         nullable=False,
         unique=True,
     )
@@ -47,8 +41,14 @@ class User(db.Model):
         nullable=False,
     )
 
+    email = db.Column(
+        db.Text,
+        nullable=False,
+        unique=True,
+    )
+
     def __repr__(self):
-        return f'<User #{self.id}: {self.username}>'
+        return f'<User #{self.id}, {self.username}, {self.email}>'
 
     def updateUser(self, username, email, password):
                
@@ -77,7 +77,6 @@ class User(db.Model):
 
         db.session.add(user)
         return user
-    
    
 
     @classmethod
@@ -100,54 +99,7 @@ class User(db.Model):
 
         return False
 
-# =================================== USER Preference class ====================================#
-
-class UserPreference(db.Model):
-
-    __tablename__ = 'user_preference'
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True
-    )
-
-    user_id =db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='cascade'),
-        nullable = False,
-        primary_key=True
-    )
-
-    pet_type = db.Column(
-        db.Text,
-        nullable=False
-    )
-
-    size = db.Column(
-        db.Text
-    )
-
-    gender = db.Column(
-        db.Text
-    )
-
-    age = db.Column(
-        db.Text
-    )
-
-    zipcode = db.Column(
-        db.Integer
-    )
-
-    # def show_matches(user_id, pet_type, size, gender, age, good_with_children, house_trained, special_need, zipcode):
-    #     response = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'type': pet_type, 'size': size, 'gender': gender, 'age': age, 'good_with_children': good_with_children, 'house_trained':house_trained, 'special_needs':special_need, 'location': zipcode, 'limit': 100, 'status': 'adoptable'})
-    #     match_data = response.json()
-    #     return match_data
-
-
 # =================================== Favorite Pet class ====================================#
-# one to many relationship  (in the future, maybe to fav pet をまとめてUsers Pet　Tableを作るほうが良いかも。 id, pet info, usersid, favorite(faulse or true), maybe(false or true) )
 class FavoritePet(db.Model):
 
     __tablename__ ='favorite_pets'
@@ -170,34 +122,12 @@ class FavoritePet(db.Model):
         nullable=False
     )
 
-    # favpetとUserのrelationshipを登録する
-
-# =================================== Maybe Pet class ====================================#        
-class MaybePet(db.Model):
-
-    __tablename__ ='maybe_pets'
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True,
-        autoincrement=True
-    )
-
-    user_id =db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='cascade'),
-        nullable=False,
-        primary_key=True
-    )    
-
-    pet_id = db.Column(
-        db.Integer,
-        nullable=False
-    )
-
-    # maybepetとUserのrelationshipを登録する
+    user = db.relationship('User', backref='favorite_pets')
+    
+    def __repr__(self):
+        return f'<FavPets #{self.id} user:{self.user_id} pet_id:{self.pet_id} >'
 # =================================== Favorite Organization class ====================================#
-# include this in future development
+
 class FavoriteOrg(db.Model):
 
     __tablename__ ='favorite_orgs'
@@ -218,13 +148,16 @@ class FavoriteOrg(db.Model):
         db.Text,
         nullable=False
     )
-    # favorgとUserのrelationshipを登録する
 
-# =================================== Comments class ====================================#
-# one to many relationship. could be many to many if I had pet & org table. or pet_idをmaybepet_id, favpet_idの二つに分ける
-class Comment(db.Model):
+    user = db.relationship('User', backref='favorite_orgs')
 
-    __tablename__ ='comments'
+    def __repr__(self):
+        return f'<FavOrg #{self.id} user:{self.user_id}, org_id:{self.org_id} >'
+    
+# =================================== Favorite Pets Comments class ====================================#
+class FavPetComment(db.Model):
+
+    __tablename__ ='fav_pet_comments'
 
     id = db.Column(
         db.Integer,
@@ -238,21 +171,48 @@ class Comment(db.Model):
         nullable= False
     )    
 
-    # org_id = db.Column(
-    #     db.Text
-    # )
-    # include organization comment maybe later
-
     pet_id = db.Column(
         db.Integer
     )
-    # fav_pet_id = db.Column(
-    #   db.integer, db.ForeignKey('favorite_pets.id', ondelete='cascade'))
-    
-    # maybe_pet_id = db.Column(
-    #   db.integer, db.ForeignKey('maybe_pets.id', ondelete='cascade'))
 
     comment= db.Column(
         db.Text
     )
+
+    user = db.relationship('User', backref='fav_pet_comments')
+
+    def __repr__(self):
+        return f'<FavPetComments #{self.id} user:{self.user_id}, pet_id:{self.pet_id} comment:{self.comment}>'
+
+# =================================== Organization Comments class ====================================#
+class OrgComment(db.Model):
+
+    __tablename__ ='org_comments'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    user_id =db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='cascade'),
+        nullable= False
+    )    
+
+    org_id = db.Column(
+        db.Text
+    )
+
+    comment= db.Column(
+        db.Text
+    )
+
+    user = db.relationship('User', backref='org_comments')
+
+    def __repr__(self):
+        return f'<OrgComments #{self.id} user:{self.user_id}, org_id:{self.org_id} comment:{self.comment}>'
+    
+    
 

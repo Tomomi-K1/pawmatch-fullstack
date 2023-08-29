@@ -18,7 +18,7 @@ const $showMyPetBtn = $('.show-my-pets')
 
 
 // =========== users_pets.html==============
-const $deleteFav = $('.delete-fav-form');
+const $deleteFav = $('.users-pets_delete-form');
 const $deleteMaybe = $('.delete-maybe-form');
 const $petComment = $('.pet-comment');
 
@@ -31,51 +31,16 @@ const $orgSearch = $('.org-search');
 // ==========org_results.html==============
 const $orgComment = $('.org-comment');
 
-$formUserLikes.on('click', 'button', function(e){
+$deleteFav.on('click', 'button', async function(e){
     e.preventDefault();
-    e.stopImmediatePropagation();
-    let response =axios({method: 'post', url:'/likes', data:{animal: e.target.dataset.animal}})
-    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
-    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
-    $('.data-'+ e.target.dataset.animal).remove()
-    console.log(response)
-});
-
-$formUserMaybe.on('click', 'button', function(e){
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    let response =axios({method: 'post', url:'/maybe', data:{animal: e.target.dataset.animal}})
-    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
-    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
-    $('.data-'+ e.target.dataset.animal).remove()
-    console.log(response)
+    try{
+        let response =await axios({method: 'delete', url:'/delete-fav', data:{animal: e.currentTarget.dataset.animal}})
+    } catch(e){
+        console.log(e);
+    }
+    $('.data-'+ e.currentTarget.dataset.animal).parent().remove() 
 })
 
-$formUserNo.on('click', 'button', function(e){
-    e.preventDefault();
-    e.stopImmediatePropagation();
-   
-    $('.data-'+ e.target.dataset.animal).remove()
-    console.log("no")
-})
-
-$deleteFav.on('click', 'button', function(e){
-    e.preventDefault();
-    let response =axios({method: 'post', url:'/delete-fav', data:{animal: e.target.dataset.animal}})
-    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
-    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
-    $('.data-'+ e.target.dataset.animal).remove()
-    console.log(response)
-})
-
-$deleteMaybe.on('click', 'button', function(e){
-    e.preventDefault();
-    let response =axios({method: 'post', url:'/delete-maybe', data:{animal: e.target.dataset.animal}})
-    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
-    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
-    $('.data-'+ e.target.dataset.animal).remove()
-    console.log(response)
-})
 
 // adding a comment on Favpet and maybe pet
 $petComment.on('click', 'button', function(e){
@@ -99,29 +64,18 @@ $petComment.on('click', 'button', function(e){
     console.log(response)
 })
 
-$searchStartBtn.click(function(e){
+$searchStartBtn.on("click", function(e){
     console.debug(`loader working?`, $searchStartBtn);
     console.log(e)
-    // $('.question-area').hide();
-    // $loader.show();
+    $('.question-area').hide();
+    $loader.show();  
     
-    // if ($('document').find('.match-result')){
-    //     $loader.hide();
-    //     $('.match-display-area').show();
-    // }
-})
-
-
-$showMyPetBtn.click(function(e){
-    console.debug(`loader working? loader:${$loader}`)
-    $showMyPetBtn.hide()
-    $loader.show()
-    
-    if ($('document').find('.user-pets')){
-    $loader.hide()
-    $('.user-pets-area').show()
+    if ($('document').find('.match-result')){
+        $loader.hide();
+        $('.match-display-area').show();
     }
 })
+
 
 //============matched_pet=======//
 
@@ -133,15 +87,12 @@ let body = document.getElementsByTagName('body');
 yBtn?.addEventListener('click',handleClick);
 nBtn?.addEventListener('click',handleClick);
 
-function handleClick(e){
+async function handleClick(e){
     let lastItem = container.lastElementChild;
     let userId = container.dataset.user;
-    console.log(`userId`,userId)
-    console.log(lastItem)
     setTimeout(()=>{
         lastItem.remove(); 
         if(container.children.length === 0){
-            console.log(`container is empty`)
             $matchDisplayArea.hide();
             $loader.show();
             document.location.href =`/pets/users/${userId}`
@@ -149,6 +100,11 @@ function handleClick(e){
     }, 800);
 
     if(e.target.id =='matched-pet_btn-yes'){
+        try{
+            let response =await axios({method: 'post', url:'/likes', data:{animal: lastItem.dataset.animal}})
+        }catch(e){
+            console.log(e);
+        }
         if(lastItem.classList.contains('move-left')){
             lastItem.classList.remove('move-left')
         }
@@ -159,7 +115,7 @@ function handleClick(e){
         }
         lastItem.classList.add('move-left')
     }
-    console.log(e.target.id);
+   
 }
 
 

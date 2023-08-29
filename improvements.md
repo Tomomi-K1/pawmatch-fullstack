@@ -12,3 +12,4 @@
 - [ ] put attribution for icon and picture
 - [ ] add logic to prevent search with empty query
 - [ ] how do I handle loader after form validation goes through? now hiding screen once button is clicked but validation does not show
+- [ ] if there is no favorite pets then it should show " not favorite pet"

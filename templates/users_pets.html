@@ -8,33 +8,35 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-      <div class="users-pets-area">
+      <div class="users-pets-area p-5 p-5">
         <h2>Your Favorite Pets</h2>
-        <div class="liked-animal row row-cols-1 row-cols-sm-2 row-cols-md-4">
+        <div class="liked-animal row">
+          {% if not fav_pets %}
+            <p>You have no Favorite pets</p>
+          {% endif %}
           {% for animal in fav_pets %}
-          <div class="col mb-3">
-            <div class="card h-100 data-{{animal['id']}} m-2">
+          <div class="col-sm-2 col-md-3 col-lg-4 mb-3">
+            <div class="card users-pets_card data-{{animal['id']}} m-2">
               
               {% if animal['photos'] %}
-              <img src="{{animal['photos'][0]['medium']}}" class="img-fluid card-img-top" alt="{{animal['species']}}" height="300">
+              <img src="{{animal['photos'][0]['medium']}}" class="card-img-top users-pets_card-img" alt="{{animal['species']}}" height="300">
               {% else %}
-              <img src="/static/images/default.jpg" class="img-fluid card-img-top" alt="no picture" height="300">
+              <img src="/static/images/default.jpg" class="card-img-top users-pets_card-img" alt="no picture" height="300">
               {% endif %}   
               
               <div class="liked-pet card-body">
                 
-                <h1 class="card-title">{{animal['name']}}</h1>
-                <form class="form form-group delete-fav-form" action="/delete-fav" method="POST">
-                  <button class="btn btn-secondary" data-animal="{{animal['id']}}"> Delete <i class="fas fa-trash-alt"></i></button>
+                <h3 class="card-title">{{animal['name']}}</h3>
+                <form class="form form-group users-pets_delete-form">
+                  <button class="btn btn-secondary" data-animal="{{animal['id']}}"><i class="fas fa-trash-alt"></i></button>
                 </form>                
 
                 <div class="description">
-                  <h3>About {{animal['name']}}</h3>
-                  <p>{{animal['type']}} {{animal['breed']}} {{animal['age']}} {{animal['gender']}} {{animal['size']}}</p>
+                  <p>{{animal['type']}}, {{animal['age']}}, {{animal['gender']}}, {{animal['size']}}</p>
                   <br>
-                  <p>Description: {{animal['description']}}</p>
-                  <p>Location: {{animal['contact']['address']['city']}}, {{animal['contact']['address']['state']}}</p>
-                  <p><a href="{{animal['url']}}">more info</a></p>  
+                  <p>{{animal['description']}} <a href="{{animal['url']}}">more info</a></p>
+                  <p><i class="fas fa-location-dot"></i> {{animal['contact']['address']['city']}}, {{animal['contact']['address']['state']}}</p>
+                   
                 </div>
 
                 <div class="pet-comment-{{animal['id']}}">
@@ -61,57 +63,4 @@
           {% endfor %}
         </div>
         
-        <br>
-
-        <h2 class="mt-4 mb-2">Your "Maybe" Pets</h2>
-        <div class="maybe-animal row row-cols-1 row-cols-sm-2 row-cols-md-4">
-          {% for animal in maybe_pets %}
-          <div class="col mb-3">
-            <div class="card h-100 data-{{animal['id']}}">
-              
-              {% if animal['photos'] %}
-              <img src="{{animal['photos'][0]['medium']}}" class="img-fluid card-img-top" alt="{{animal['species']}}" height="300">
-              {% else %}
-              <img src="/static/images/default.jpg" class="img-fluid card-img-top" alt="no picture" height="300">
-              {% endif %}   
-              
-              <div class="liked-pet card-body">
-                <h1 class="card-title">{{animal['name']}}</h1>
-                <form class="form form-group delete-maybe-form" action="/delete-maybe" method="POST">
-                  <button class="btn btn-secondary" data-animal="{{animal['id']}}"> Delete <i class="fas fa-trash-alt"></i></button>
-                </form>          
-                
-                <div class="description">
-                  <h3>About {{animal['name']}}</h3>
-                  <p>{{animal['type']}} {{animal['breed']}} {{animal['age']}} {{animal['gender']}} {{animal['size']}}</p>
-                  <br>
-                  <p>Description: {{animal['description']}}</p>
-                  <p>Location: {{animal['contact']['address']['city']}}, {{animal['contact']['address']['state']}}</p>
-                  <p><a href="{{animal['url']}}">more info</a></p>  
-              </div>
-              
-              <div class="pet-comment-{{animal['id']}}">
-                <h3>Comments</h3>
-                {% if comments %}
-                  {% for comment in comments %}
-                    {% if comment.pet_id == animal['id'] %}
-                    <p class="{{comment.id}}">{{comment.comment}}</p>
-                    {% endif %}
-                  {% endfor %}
-                {% endif %}
-                <form class="pet-comment form-group" method="POST">
-                  <div>
-                  {{ form.hidden_tag() }}
-                  {{ form.comment(class="pet-textarea") }}
-                  </div>
-                  <button class="btn btn-warning" data-animal="{{animal['id']}}"> add a comment </button>
-                </form> 
-              </div>
-  
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-        </div> 
-      </div>
 {% endblock %}

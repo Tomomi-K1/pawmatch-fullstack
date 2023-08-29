@@ -45,6 +45,11 @@ footer a:hover{
   box-shadow: 4px 7px 23px 0px rgba(0,0,0,0.3);
 }
 
+.card-img-top{
+  object-fit: cover;
+  overflow: hidden;
+}
+
   /*Photo by <a href="https://unsplash.com/@victor_vector?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Victor Grabarczyk</a> on <a href="https://unsplash.com/photos/N04FIfHhv_k?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
   */
 /* =====home.html ====== */
@@ -132,9 +137,11 @@ footer a:hover{
     }
 
     .matched-pet_outer{
-      
+    
       height: 800px;
     }
+
+
 }
 
 
@@ -145,11 +152,8 @@ footer a:hover{
 }
 
 #matched-pet_outline{
-    /* width: 300px; */
-    /* width: 70vw; */
     width: 100%;
     height: 500px;
-    /* border: 3px red solid; */
     border-radius: 10px;
     position: relative;
     display:flex;
@@ -158,19 +162,17 @@ footer a:hover{
 }
 
 .matched-pet_outer{
-  /* width: 300px; */
   width: 100%;
-  /* height: 400px; */
   height: 500px;
   border-radius: 10px;
   position:absolute;
-  background-color: aliceblue;
 }
 
 .matched-pet_div-p{
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
   width: 100%;
   text-align: center;
-  /* width: 300px; */
   height:100px;
   position: absolute;
   bottom: 0;
@@ -201,13 +203,45 @@ footer a:hover{
 }
 
 .move-left{
-    transform: translate(-500px);
-    transition: .8s;
+    transform: translate(-800px);
+    transition: .5s;
 }
 
 .move-right{
-    transform: translate(500px);
-    transition: .8s;
+    transform: translate(800px);
+    transition: .5s;
+}
+
+/* ==========users_pets.html */
+.users-pets-area{
+  width: 90%;
+}
+
+.users-pets_card{
+  position: relative;
+}
+.users-pets_delete-form{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.users-pets_card-img{
+  object-fit: cover;
+  overflow: hidden;
+}
+
+
+/* ============org_results ================= */
+.org-search-area a {
+  text-decoration: none;
+  color: black;
+}
+
+.org-search-area a:hover {
+  text-decoration: underline;
+  color: black;
+
 }
 
 /*======================= loading spinner==================== */
@@ -265,3 +299,7 @@ div:nth-child(5){
 div:nth-child(6){
   animation-delay: 1.2s;
 }
+
+
+/* <a href="https://www.flaticon.com/free-icons/location" title="location icons">Location icons created by Freepik - Flaticon</a>
+location font */

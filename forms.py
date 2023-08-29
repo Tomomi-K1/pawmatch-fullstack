@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, BooleanField, SelectField, IntegerField, RadioField
+from wtforms import StringField, PasswordField, TextAreaField, SelectField, IntegerField
 from wtforms.validators import DataRequired, Email, Length
 
 class UserForm(FlaskForm):
@@ -13,13 +13,9 @@ class LoginForm(FlaskForm):
 
 class UserPreferenceForm(FlaskForm):
     pet_type = SelectField('Type of Pet', choices=[ ("Dog", "Dog"), ("Cat","Cat"), ("Rabbit", "Rabbit"), ("Bird", "Bird"), ("Small & Furry","Small & Furry")])
-    # breed = SelectField('Breed')
     size = SelectField('Size', choices=[('small','Small'), ('medium','Medium'), ('large','Large'), ('xlarge','XLarge')])
     gender = SelectField('Gender',choices=[('male','Male'), ('female','Female')])
     age = SelectField('Age', choices=[('baby','Baby'), ('young','Young'), ('adult','Adult'), ('senior','Senior')])
-    # good_with_children = BooleanField('Good with Children', default =False)
-    # house_trained = BooleanField('House trained', default =False)
-    # special_need = BooleanField('Special need', default =False)
     zipcode = IntegerField('Zipcode', validators=[DataRequired()])
 
 class CommentForm(FlaskForm):

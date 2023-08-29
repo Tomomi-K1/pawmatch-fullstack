@@ -8,9 +8,9 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-
+<div class="org-search-area p-5 p-5">
     <h2>Organization Search Result</h2>
-    <p>Searched Word: {{user_query}}</p>
+    <p>Search Word: {{user_query}}</p>
         
           <!-- <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -34,15 +34,15 @@
               {% endif %}
            
               <div class="card-body">
-                <h3 class="card-title">
-                  <a href="{{org['url']}}">{{org['name']}}</a>
-                </h3>
+                <h5 class="card-title p-2">
+                  <a class="org-results-" href="{{org['url']}}">{{org['name']}}</a>
+                <h5>
                 
 
                 <div class="card-text description">
-                  <p>Location: {{org['address']['city']}}, {{org['address']['state']}}</p>
-                  <p>phone: {{org['phone']}}</p>
-                  <p>email: {{org['email']}}</p>
+                  <p class="fs-6"><i class="fas fa-location-dot"></i> {{org['address']['city']}}, {{org['address']['state']}}</p>
+                  <p class="fs-6"><i class="fa-solid fa-phone"></i> {{org['phone']}}</p>
+                  <p class="fs-6"><i class="fa-solid fa-envelope"></i> {{org['email']}}</p>
                 </div>
 
 
@@ -50,6 +50,7 @@
             </div>
           </div>  
           {% endfor %}
-        </div>  
+        </div>
+      </div>  
          
 {% endblock %}
