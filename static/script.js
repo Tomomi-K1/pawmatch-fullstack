@@ -18,7 +18,7 @@ const $showMyPetBtn = $('.show-my-pets')
 
 
 // =========== users_pets.html==============
-const $deleteFav = $('.delete-fav-form');
+const $deleteFav = $('.users-pets_delete-form');
 const $deleteMaybe = $('.delete-maybe-form');
 const $petComment = $('.pet-comment');
 
@@ -26,126 +26,93 @@ const $petComment = $('.pet-comment');
 const $searchStartBtn = $('.search-start');
 
 // =======org_search.html ==================
-const $orgSearch = $('.org-search');
+const $orgSearch = $('.org-search-form');
 
 // ==========org_results.html==============
 const $orgComment = $('.org-comment');
 
-$formUserLikes.on('click', 'button', function(e){
+$deleteFav.on('click', 'button', async function(e){
     e.preventDefault();
-    e.stopImmediatePropagation();
-    let response =axios({method: 'post', url:'/likes', data:{animal: e.target.dataset.animal}})
-    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
-    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
-    $('.data-'+ e.target.dataset.animal).remove()
-    console.log(response)
-});
-
-$formUserMaybe.on('click', 'button', function(e){
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    let response =axios({method: 'post', url:'/maybe', data:{animal: e.target.dataset.animal}})
-    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
-    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
-    $('.data-'+ e.target.dataset.animal).remove()
-    console.log(response)
+    try{
+        await axios({method: 'delete', url:'/delete-fav', data:{animal: e.currentTarget.dataset.animal}})
+    } catch(e){
+        console.log(e);
+    }
+    $('.data-'+ e.currentTarget.dataset.animal).parent().remove() 
 })
 
-$formUserNo.on('click', 'button', function(e){
-    e.preventDefault();
-    e.stopImmediatePropagation();
-   
-    $('.data-'+ e.target.dataset.animal).remove()
-    console.log("no")
-})
-
-$deleteFav.on('click', 'button', function(e){
-    e.preventDefault();
-    let response =axios({method: 'post', url:'/delete-fav', data:{animal: e.target.dataset.animal}})
-    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
-    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
-    $('.data-'+ e.target.dataset.animal).remove()
-    console.log(response)
-})
-
-$deleteMaybe.on('click', 'button', function(e){
-    e.preventDefault();
-    let response =axios({method: 'post', url:'/delete-maybe', data:{animal: e.target.dataset.animal}})
-    // if the button is clicked, depending on the type of button we clicked, we will send axios request to backend with /likes, /maybe, /no  with POST request.
-    //in app.py, write a view function with each route /likes, /maybe, /no. For /likes, /maybe, store add info to DB. for no create a list of no's so next time we don't show those pets.
-    $('.data-'+ e.target.dataset.animal).remove()
-    console.log(response)
-})
 
 // adding a comment on Favpet and maybe pet
-$petComment.on('click', 'button', function(e){
+$petComment.on('click', 'button', async function(e){
     e.preventDefault();
     let pet_id=e.target.dataset.animal
-    let comment = $(`.data-${pet_id}`).find('.pet-textarea').val()
-        
+    let comment = $(`.data-${pet_id}`).find('.pet-textarea').val()    
     // call to backend to add a comment to database
-    let response =axios({method: 'post', url:`/comments/${pet_id}`, data:{animal: pet_id, comment:comment}})
-
+    try{
+        await axios({method: 'post', url:`/comments/${pet_id}`, data:{animal: pet_id, comment:comment}})
+    } catch(e){
+        console.log(e);
+    }
     // take comment and update the HTML page
-    let commentSection = $(`.pet-comment-${pet_id} h3`);
-    let newElem = $('<p>').text(comment);
-    commentSection.after(newElem);
+    let commentSection = $(`.pet-comment-${pet_id}`);
+    let newElem = $('<li>').text(comment);
+    commentSection.append(newElem);
     
     // clear entries
     $(`.data-${pet_id}`).find('.pet-textarea').val('')   
-    
-
-    console.log(comment)
-    console.log(response)
 })
 
-// adding comment on org
-// $orgComment.on('click', 'button', function(e){
-//     e.preventDefault();
-//     let org_id=e.target.dataset.org
-//     let comment = $(`.data-${org_id}`).find('.org-textarea').val()
-        
-//     // call to backend to add a comment to database
-//     let response =axios({method: 'post', url:`/comments/${org_id}`, data:{org: org_id, comment:comment}})
+$searchStartBtn.on("click", function(e){
+    $loader.show();  
+    $('.question-area').hide();   
+})
 
-//     // take comment and update the HTML page
-//     let commentSection = $(`.org-comment-${org_id} h3`);
-//     let newElem = $('<p>').text(comment);
-//     commentSection.After(newElem);
-    
-//     // clear entries
-//     $(`.data-${org_id}`).find('.org-textarea').val('')   
-    
+$orgSearch.on('click', 'button', function(e){
+    console.log($orgSearch);
+    $loader.show();
+    $('.org-search-area').hide();
+})
 
-//     console.log(comment)
-//     console.log(response)
-// })
+//============matched_pet=======//
 
-// $orgSearch.on('click', 'button', )
+let yBtn = document.getElementById('matched-pet_btn-yes');
+let nBtn = document.getElementById('matched-pet_btn-no');
+let container = document.getElementById('matched-pet_outline');
+let body = document.getElementsByTagName('body');
 
+yBtn?.addEventListener('click',handleClick);
+nBtn?.addEventListener('click',handleClick);
 
-$searchStartBtn.click(function(e){
-    $('.question-area').hide()
-    $loader.show()
-    
-    if ($('document').find('.match-result')){
-    $loader.hide()
-    $('.match-display-area').show()
+async function handleClick(e){
+    let lastItem = container.lastElementChild;
+    let userId = container.dataset.user;
+    setTimeout(()=>{
+        lastItem.remove(); 
+        if(container.children.length === 0){
+            $matchDisplayArea.hide();
+            $loader.show();
+            document.location.href =`/pets/users/${userId}`
+        }        
+    }, 800);
+
+    if(e.target.id =='matched-pet_btn-yes'){
+        try{
+            await axios({method: 'post', url:'/likes', data:{animal: lastItem.dataset.animal}})
+        }catch(e){
+            console.log(e);
+        }
+        if(lastItem.classList.contains('move-left')){
+            lastItem.classList.remove('move-left')
+        }
+        lastItem.classList.add('move-right')
+    } else if(e.target.id =='matched-pet_btn-no'){
+        if(lastItem.classList.contains('move-right')){
+            lastItem.classList.remove('move-right')
+        }
+        lastItem.classList.add('move-left')
     }
-})
-
-
-$showMyPetBtn.click(function(e){
-    $showMyPetBtn.hide()
-    $loader.show()
-    
-    if ($('document').find('.user-pets')){
-    $loader.hide()
-    $('.user-pets-area').show()
-    }
-})
-
-
+   
+}
 
 
 

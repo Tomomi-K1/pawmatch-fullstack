@@ -8,62 +8,41 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-<div class="match-display-area row justify-content-md-center">
-  <div class="col-md-7 col-lg-7">
+<div class="match-display-area top-margin-80px row justify-content-md-center">
+  <h2 class="matched-pet_h2"> Do you want to adopt?</h2>
+  <div class="col-md-7 col-xl-6 col-xxl-5 matched-card-area mt-2">
+    <div id="matched-pet_outline" data-user={{g.user.id}}>
     {% for animal in list_of_animals %}
     
-    <div class="card data-{{animal['id']}}">
-    <div class="matched-pet card-body">
-    <h1 class="card-title">{{animal['name']}}</h1>
-        <div class="img">
-        <!-- <h3>Like</h3> -->
-        <!-- {% for photo in animal['photos'] %}
-        <img src="{{photo['large']}}" alt="{{animal['species']}}">
-        {% endfor %} -->
-        {% if animal['photos'] %}
-        <img src="{{animal['photos'][0]['medium']}}" class="img-thumbnail img-fluid card-img-top" alt="{{animal['species']}}">
+    
+        <div class="matched-pet_outer" data-animal="{{animal['id']}}">
+
+            {% if animal['photos'] %}
+            <img src="{{animal['photos'][0]['large']}}" class="matched-pet_img" alt="{{animal['species']}}">
             {% else %}
-        <img src="default.jpg" alt="no picture">
-        {% endif %}   
+            <img src="../static/images/default.jpg" class="matched-pet_img" alt="no picture">
+            {% endif %}   
+            <div class="matched-pet_div-p">
+                <h6>{{animal['name']}}</h6>
+                <div>
+                  <p class="matched-pet_p"><i class="fa-solid fa-location-dot" style="color: #ffffff;"></i> {{animal['contact']['address']['city']}}</p>
+                </div>
+            </div>
         </div>
-        <div class="description">
-            <h3>About {{animal['name']}}</h3>
-            <p>{{animal['type']}} {{animal['breed']}} {{animal['age']}} {{animal['gender']}} {{animal['size']}}</p>
-            <br>
-            <p>Description: {{animal['description']}}</p>
-            <p>Location: {{animal['contact']['address']['city']}}, {{animal['contact']['address']['state']}}</p>
-            <p><a href="{{animal['url']}}">more info</a></p>   
-            
-            <h3>Do you want to adopt {{animal['name']}}?</h3>
-            <div>
-                <form action="/likes" class="form form-user-likes"> 
-                    <button type="submit" class="favorite btn btn-warning" data-animal="{{animal['id']}}">I want to adopt {{animal['name']}}!</buttton>
-                </form>
-            </div>
-            <div>
-                <form action="/maybe" class="form form-user-maybe">    
-                    <button class="maybe btn btn-success" data-animal="{{animal['id']}}"> Not sure, Maybe?</buttton>
-                </form>
-            </div>
-            <div>
-                <form class="form form-user-no">
-                    <button class="no btn btn-light" data-animal="{{animal['id']}}"> No </buttton>
-                </form>
-            </div>
-            
-            <!-- <button class="nextbtn"></button> -->
-        </div>
-    </div>
-    </div>
+  
     
     {% endfor %}
-  
-    <form action="/pets/users/{{g.user.id}}">
-        <button class="btn btn-warning show-my-pets">Show My Favorite and Maybe Pets</button>
-    </form>
-  </div> 
+    </div>
+    
+  </div>
+  <div class="container d-flex justify-content-center" >
+    <button class="btn btn-secondary m-2" id="matched-pet_btn-no">No</button>
+    <button class="btn btn-secondary m-2" id="matched-pet_btn-yes">yes</button>
+  </div>
 </div>
-
+   
 
     
 {% endblock %}
+
+

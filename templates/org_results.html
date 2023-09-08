@@ -8,48 +8,37 @@
 
 {# ======= main content area ======== #}
 {% block content %}
+<div class="org-search-area p-5 p-5">
+  <h2>Organization Search Result</h2>
+  <p>Search Word: {{user_query}}</p>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+    {% if orgs_list|length == 0  %}
+      <p> Sorry, we could not find matching organizations.</p>
+    {% endif %}
 
-    <h2>Organization Search Result</h2>
-    <p>Searched Word: {{user_query}}</p>
-        
-          <!-- <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Sort
-            </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Sort by City</a></li>
-              <li><a class="dropdown-item" href="#">Sort by State</a></li>
-              <li><a class="dropdown-item" href="#">Sort by Organization</a></li>
-            </ul>
-          </div> -->
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
-          {% for org in orgs_list %}
-          <div class="col mb-3">
-            <div class="card h-100 data-{{org['id']}}">
-             
-              {% if org['photos'] %}
-              <img src="{{org['photos'][0]['medium']}}" class="img-fluid card-img-top" alt="{{org['name']}}" height="300">                    
-              {% else %}
-              <img src="/static/images/default.jpg" class="img-fluid card-img-top" alt="no picture" height="300", width="300">
-              {% endif %}
-           
-              <div class="card-body">
-                <h3 class="card-title">
-                  <a href="{{org['url']}}">{{org['name']}}</a>
-                </h3>
-                
-
-                <div class="card-text description">
-                  <p>Location: {{org['address']['city']}}, {{org['address']['state']}}</p>
-                  <p>phone: {{org['phone']}}</p>
-                  <p>email: {{org['email']}}</p>
-                </div>
-
-
-              </div> 
+    {% for org in orgs_list %}
+      <div class="col mb-3">
+        <div class="card h-100 data-{{org['id']}}">
+          {% if org['photos'] %}
+            <img src="{{org['photos'][0]['medium']}}" class="img-fluid card-img-top" alt="{{org['name']}}" height="300">                    
+          {% else %}
+            <img src="/static/images/default.jpg" class="img-fluid card-img-top" alt="no picture" height="300", width="300">
+          {% endif %}
+      
+          <div class="card-body org-card-body">
+            <h5 class="card-title p-2">
+              <a class="org-results-" href="{{org['url']}}">{{org['name']}}</a>
+            </h5>           
+            <div class="card-text description">
+              <p class="fs-6"><i class="fas fa-location-dot"></i> {{org['address']['city']}}, {{org['address']['state']}}</p>
+              <p class="fs-6"><i class="fa-solid fa-phone"></i> {{org['phone']}}</p>
+              <p class="fs-6"><i class="fa-solid fa-envelope"></i><a href="mailto:{{org['email']}}"> {{org['email']}}</a></p>
             </div>
-          </div>  
-          {% endfor %}
-        </div>  
+          </div> 
+        </div>
+      </div>  
+    {% endfor %}
+  </div>
+</div>  
          
 {% endblock %}

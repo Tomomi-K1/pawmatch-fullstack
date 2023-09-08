@@ -1,0 +1,15 @@
+# what need to improve
+- [ ] implement try and catch when calling api since this api deletes animal Id. I need to deal with that frequent data updates.
+- [ ] let a user find a pet without logging in
+- [ ] deal with zipcode not existing in external API. Maybe we find city name from zipcode and call external API.
+- [ ] reduce the chocies of animals?
+- [x] remove Maybe categories
+- [ ] save minimum pet data in database to show a pet on favorite pets page so there will be less external API calls.
+- [ ] loader is not showing up
+- [ ] make all matched pet's picture and card size the same. Only PetName on the photo. Keep the card size the same
+- [ ] change homepage design
+- [ ] add map view for organization search
+- [ ] put attribution for icon and picture
+- [ ] add logic to prevent search with empty query
+- [ ] how do I handle loader after form validation goes through? now hiding screen once button is clicked but validation does not show
+- [ ] if there is no favorite pets then it should show " not favorite pet"
