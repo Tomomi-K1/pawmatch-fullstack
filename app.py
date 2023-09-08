@@ -5,13 +5,12 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 import requests, random
 from datetime import datetime, timedelta
-import threading
 from flask_cors import CORS
 import os
 
-from models import db, connect_db, User, UserPreference, FavoritePet, MaybePet, FavoriteOrg, Comment
+from models import db, connect_db, User, FavoritePet, FavoriteOrg, FavPetComment, OrgComment
 from forms import UserForm, LoginForm, UserPreferenceForm, CommentForm
-from config_info import API_KEY,API_SECRET, SECRET_KEY
+from config_info import API_KEY,API_SECRET, SECRET_KEY, DemoUsername, DemoPassword
 
 # create the app
 app = Flask(__name__)
@@ -46,26 +45,30 @@ connect_db(app)
 #  Necessary info for calling API 
 # =========================================================#
 API_BASE_URL = 'https://api.petfinder.com/v2'
+ACCESS_TOKEN = None
+EXPIRES_IN = None
+headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
 
 def get_token():
-    res = requests.post(f'{API_BASE_URL}/oauth2/token', 
-                        data={
-                            'grant_type':'client_credentials', 
-                            'client_id': API_KEY, 
-                            'client_secret': API_SECRET})
-    data=res.json()
-    return data['access_token']
-
-ACCESS_TOKEN= get_token()
-headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
-print(f"top of app: token {ACCESS_TOKEN}, Access Time {ACCESS_TIME}")
-
-
+    # if I want to reassign global variable, we need use keyword "global"
+    global ACCESS_TOKEN 
+    global EXPIRES_IN
+    global headers 
+    if EXPIRES_IN is None or EXPIRES_IN <= datetime.now() :
+        
+        res = requests.post(f'{API_BASE_URL}/oauth2/token', 
+                            data={
+                                'grant_type':'client_credentials', 
+                                'client_id': API_KEY, 
+                                'client_secret': API_SECRET})
+        data=res.json()
+        ACCESS_TOKEN = data['access_token']
+        EXPIRES_IN = datetime.now() + timedelta(seconds=data['expires_in'])
+        headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
+    print(ACCESS_TOKEN)
 # ==========================================================#
 
 CURR_USER_KEY = 'curr_user'
-pets_list= []
-orgs_list = []
 
 # ============================================================#
 #=== signup/login/logout g.user & Session assign handling ====#
@@ -115,13 +118,11 @@ def signup():
                 password=form.password.data
             )
             db.session.commit()
-        
+            do_login(user)
+            return redirect('/questions')  
         except IntegrityError:
             flash("Username already taken", 'danger')
-
-        do_login(user)
-
-        return redirect('/questions')
+            return render_template('signup.html', form=form)     
 
     else:
         return render_template('signup.html', form=form)
@@ -146,6 +147,22 @@ def login():
             flash("Invalid credentials.", 'danger')
 
     return render_template('login.html', form=form)
+
+# ============ LOG IN DemoUser  ======================#
+@app.route("/login/demo", methods=["GET"])
+def loginDemoUser():
+    """let Demo User login"""
+
+    user = User.authenticate(
+        username = DemoUsername,
+        password = DemoPassword
+    )
+
+    if user:
+        do_login(user)
+        return redirect("/questions")
+    else:
+        flash("Invalid credentials.", 'danger')
 
 # ============ LOG OUT User  ======================#
 @app.route('/logout')
@@ -205,80 +222,72 @@ def home():
 @app.route('/questions', methods=["GET", "POST"])
 def show_questions():
     """Questions to a user to find pets and show list of matching pets"""
-
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/home")
+    
+    
     form = UserPreferenceForm()
 
     if form.validate_on_submit():
-        # if user not logged in, how do I do this?
-        
-        user_pref = UserPreference(# raise
-        user_id = g.user.id,
-        pet_type = form.pet_type.data,
-        size = form.size.data,
-        gender = form.gender.data,
-        age = form.age.data,
-        zipcode = form.zipcode.data)
-
-        
-        db.session.add(user_pref)
-        db.session.commit()
-    
         try:
-            ACCESS_TOKEN= get_token()
+            get_token()
             response = requests.get(f'{API_BASE_URL}/animals', 
                                     headers=headers, 
                                     params={
-                                        'type': user_pref.pet_type, 
-                                        'size': user_pref.size, 
-                                        'gender': user_pref.gender, 
-                                        'age': user_pref.age, 
-                                        'location': user_pref.zipcode, 
-                                        'limit': 50, 
-                                        'status': 'adoptable'})
+                                        'type': form.pet_type.data, 
+                                        'size': form.size.data, 
+                                        'gender': form.gender.data, 
+                                        'age': form.age.data, 
+                                        'location': form.zipcode.data, 
+                                        'limit': 100, 
+                                        'status': 'adoptable',
+                                        'distance': 20})
             match_data = response.json()
             list_of_animals = match_data['animals']
-
         except KeyError:
             print(f"no animal found {response}")
-        #try and errorを組み込む
-        
-        # ここでデータをSimplyfyしてpets_listにappendしたらどうか？
-        #   この時にOrgIDからOrg NameとURLを取得しておく
+            flash('No Match Found. Please Try Again.', 'danger')
+            return redirect('/questions')
 
+        user = User.query.get_or_404(g.user.id)  
+        print([pet.pet_id for pet in user.favorite_pets])  
+        # remove animals without pictures
         for animal in list_of_animals:
-            if len(animal['photos']) ==0:
+            if len(animal['photos']) == 0:
+                list_of_animals.remove(animal)
+            if(animal['id'] in [pet.pet_id for pet in user.favorite_pets]):
                 list_of_animals.remove(animal)
         
         if len(list_of_animals) == 0 :
             flash('No Match Found. Please Try Again.', 'danger')
             return redirect('/questions')
         elif len(list_of_animals) > 10:
-            list_of_animals= random.sample(list_of_animals, 10) # randomly choose 10 from the list and make new list
-            return render_template('match_result.html', list_of_animals=list_of_animals)            
-        
-        return render_template('match_result.html', list_of_animals=list_of_animals)
+            list_of_animals= random.sample(list_of_animals, 10)
+            return render_template('match_result.html', list_of_animals=list_of_animals)
+        elif len(list_of_animals) > 0:       
+            return render_template('match_result.html', list_of_animals=list_of_animals)
 
     return render_template('questions.html', form=form)
 
-# =============adding pets to Favorite or Maybe========================
+# =============adding pets to Favorite========================
 @app.route('/likes', methods=['POST'])
 def add_fav():
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/home")
+    
     received_data=request.get_json()
-    print(f"received_data{received_data}")
     return_data = {
         'status':'success',
         'message': f'received:{received_data["animal"]}'
-
     }
 
-    # =====this logic is not working why???========
-    # previous code
-    # all_fav=FavoritePet.query.all()
-    # if FavoritePet.query.filter_by(pet_id=received_data['animal']) in all_fav:
-    # I need method (e.g. .all() or .first()) to fire the query after filter_by or filter.
-
-    all_fav=FavoritePet.query.all()# get users fav pet, if aleady exist, don't add no action
-    if FavoritePet.query.filter_by(pet_id=received_data['animal']).first() in all_fav:
+    user = User.query.get_or_404(g.user.id)
+    favorites = user.favorite_pets
+    # all_fav=FavoritePet.query.all()# get users fav pet, if aleady exist, don't add no action
+    if FavoritePet.query.filter_by(pet_id=received_data['animal']).first() in favorites:
         return_data = {
         'status':'already in database',
         'message': f'received:{received_data["animal"]}'
@@ -287,19 +296,6 @@ def add_fav():
         return flask.Response(response=json.dumps(return_data), status=201)
          
     else:
-
-        # ここでpets_listの中からpetを探して、fav pet table に追加
-        # for loop 内で FavoritePet(pet info) db.session.add(favpet)までいれる 
-        # 追加する情報は？
-        # pet_id
-        # imgurl
-        # pet_name
-        # pet_description
-        # location_city
-        # location_state
-        # organization_id
-        # org name
-        # org url 
         
         favPet = FavoritePet(
         pet_id = received_data['animal'],
@@ -310,55 +306,23 @@ def add_fav():
 
         return flask.Response(response=json.dumps(return_data), status=201)
 
-@app.route('/maybe', methods=['POST'])
-def add_maybe():
-    received_data=request.get_json()
-    print(f"received_data{received_data}")
-    return_data = {
-        'status':'success',
-        'message': f'received:{received_data["animal"]}'
-    }
-
-    all_maybe=MaybePet.query.all()
-    if MaybePet.query.filter_by(pet_id=received_data['animal']).first() in all_maybe:
-        return_data = {
-        'status':'already in database',
-        'message': f'received:{received_data["animal"]}'
-        }
-
-        return flask.Response(response=json.dumps(return_data), status=201)
-
-    maybePet = MaybePet(
-    pet_id = received_data['animal'],
-    user_id = g.user.id)
-
-    db.session.add(maybePet)
-    db.session.commit()
-
-    return flask.Response(response=json.dumps(return_data), status=201)
-
-# ================ Show all Fav and maybe pet =================================
+# ================ Show all Fav pets =================================
 @app.route('/pets/users/<int:user_id>')
 def user_page(user_id):
-    """show user profile including preference, favorite pets, maybe pets saved"""
+    """show user profile including preference, favorite pets saved""" 
+
+    if not g.user or g.user.id != user_id:
+        flash('Please log in', "danger")
+        return redirect('/home')
     
-    ACCESS_TOKEN= get_token()
-    print(f'view function user_page :{ACCESS_TOKEN}')
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/home")
-    # do I need to put if g.user_id does not equal  to user_id?
-
+    get_token()
 
     form=CommentForm()
 
     user = User.query.get_or_404(user_id)
-    # userとFavoritepetの関係がModelで設定されていればもっと簡単にできるはず。
-    fav_pets_id = [pet.pet_id for pet in FavoritePet.query.filter_by(user_id = g.user.id).all()]
-    fav_pets =[]
-    
-    
+    favorites=user.favorite_pets
+    fav_pets_id = [pet.pet_id for pet in favorites]
+    fav_pets =[]    
 
     for pet_id in fav_pets_id:
         try:
@@ -367,57 +331,27 @@ def user_page(user_id):
             fav_pets.append(data['animal'])
 
         except KeyError:
-            print(f'{pet_id} does not exit anymore')
             FavoritePet.query.filter_by(pet_id = pet_id).delete()
             db.session.commit()
-        #  ここにTry and error でもしすでにPET IDが消えている場合の対応をする
+
+    comments = FavPetComment.query.filter_by(user_id = g.user.id)
+    print(user.comments)
 
 
-    comments = Comment.query.filter_by(user_id = g.user.id)
-
-       
-    maybe_pets_id = [pet.pet_id for pet in MaybePet.query.filter_by(user_id = g.user.id).all()]
-    maybe_pets =[]
-    for pet_id in maybe_pets_id:
-        try:
-            response = requests.get(f'{API_BASE_URL}/animals/{pet_id}', headers=headers)
-            data = response.json()
-            maybe_pets.append(data['animal'])
-        except KeyError:
-            print(f'{pet_id} does not exit anymore')
-            MaybePet.query.filter_by(pet_id = pet_id).delete()
-            db.session.commit()
-    # make api calls to get data for each pets and store that in dictionary
-    # each rendered animal will have comments section, delete button    
-
-    return render_template('users_pets.html', user=user, fav_pets=fav_pets, maybe_pets=maybe_pets, comments = comments, form=form)
+    return render_template('users_pets.html', user=user, fav_pets=fav_pets, comments = comments, form=form)
 
 
-# ============= DELETE user's favorite & maybe pet===========================
-@app.route('/delete-fav', methods=['POST'])
+# ============= DELETE user's favorite pet===========================
+@app.route('/delete-fav', methods=['DELETE'])
 def delete_fav():
     received_data=request.get_json()
-    print(f"received_data{received_data}")
+    print(f'received:{received_data}')
     return_data = {
         'status':'successfully deleted',
-        'message': f'received:{received_data["animal"]}'
+        'message': f'received:{received_data}'
     }
 
-    FavoritePet.query.filter_by(pet_id=received_data['animal']).delete()
-    db.session.commit()
-
-    return flask.Response(response=json.dumps(return_data), status=201)
-
-@app.route('/delete-maybe', methods=['POST'])
-def delete_maybe():
-    received_data=request.get_json()
-    print(f"received_data{received_data}")
-    return_data = {
-        'status':'successfully deleted',
-        'message': f'received:{received_data["animal"]}'
-    }
-
-    MaybePet.query.filter_by(pet_id=received_data['animal']).delete()
+    FavoritePet.query.filter(FavoritePet.pet_id == received_data['animal'], FavoritePet.user_id == g.user.id).delete()
     db.session.commit()
 
     return flask.Response(response=json.dumps(return_data), status=201)
@@ -426,15 +360,18 @@ def delete_maybe():
 @app.route('/comments/<int:pet_id>', methods=['POST'])
 def add_pet_comments(pet_id):
     received_data=request.get_json()
-    print(f"received_data{received_data}")
     return_data = {
         'status':'successful',
         'message': f'received:pet_id {received_data["animal"]}, comment:{received_data["comment"]}'
     }
 
-    comment = Comment(
+    favorite_pet = FavoritePet.query.filter(FavoritePet.pet_id == pet_id, FavoritePet.user_id == g.user.id).one()
+    
+    print(favorite_pet)
+    
+    comment = FavPetComment(
         user_id=g.user.id,
-        pet_id =pet_id,
+        fav_pet_id=favorite_pet.id,
         comment=received_data['comment']
     )
 
@@ -452,19 +389,13 @@ def show_search_page():
 
 @app.route('/org-results', methods=['GET'])
 def org_search_result():
-    ACCESS_TOKEN= get_token()
-    orgs_list = []
+    get_token()
 
     user_query = request.args.get('q')
     response = requests.get(f'{API_BASE_URL}/organizations', headers=headers, params={'query': user_query})
     data = response.json()
     orgs = data['organizations']
-    # print(f'user_query:{user_query} orgs:{orgs}')
     
-    orgs_list =[{'id': org['id'], 'name': org['name'], 'phone': org['phone'], 'city': org['address']['city'], 'state': org['address']['state'], 'url': org['url'], 'img_url': org['photos'][0]['small'] if len(org['photos']) != 0 else "None" } for org in orgs]
-    
-    # print(f'orgs_list:{orgs_list}')
-
     return render_template('org_results.html', user_query=user_query, orgs_list=orgs)
     
     

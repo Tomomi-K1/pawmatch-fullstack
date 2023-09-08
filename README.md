@@ -1,6 +1,7 @@
 # Find Your Furmily - Paw Match
 
-Access deployed app from here: **[Paw Match](https://paw-match.herokuapp.com/)**
+Access deployed app from here: **[Paw Match](https://paw-match.herokuapp.com/)** 
+Due to Heroku not offering the free tier anymore, I am getting ready to upload this with render.com.
 
 #### 1. Goal
 
@@ -22,7 +23,6 @@ This API will provide detailed pet and organization information.
 - User’s preference table - store user’s pet preferences
 - User comments table -store users comment on pets and organizations
 - Favorite pet table - store user’s favorite pets
-- Maybe pet table - store user’s second choice pets
 - Favorite organization table -store user’s favorite organization
 
 
@@ -38,9 +38,9 @@ Password, username, and email.
 
 - Ask a series of questions to find out the user's preference for a pet.
 - Rather than a showing list of pets, this website will show a randomly chosen pet one by one up to 10 animals.
-- A User will choose yes, no, maybe on the pet shown. 
-- Website will create a list of animals with “yes” and “maybe”. -Users can edit the lists and add comments to each pet. 
-
+- A User will choose yes, no on the pet shown. 
+- Website will create a list of animals with “yes”
+- Users can edit the lists and add comments to each pet. 
 
 #### 8. User flow 
 

@@ -1,4 +1,4 @@
-from models import db, connect_db, User, UserPreference, FavoritePet, MaybePet, FavoriteOrg, Comment
+from models import db, connect_db, User, FavoritePet, FavoriteOrg, FavPetComment, OrgComment
 
 from app import app
 
