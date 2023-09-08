@@ -26,7 +26,7 @@ const $petComment = $('.pet-comment');
 const $searchStartBtn = $('.search-start');
 
 // =======org_search.html ==================
-const $orgSearch = $('.org-search');
+const $orgSearch = $('.org-search-form');
 
 // ==========org_results.html==============
 const $orgComment = $('.org-comment');
@@ -34,7 +34,7 @@ const $orgComment = $('.org-comment');
 $deleteFav.on('click', 'button', async function(e){
     e.preventDefault();
     try{
-        let response =await axios({method: 'delete', url:'/delete-fav', data:{animal: e.currentTarget.dataset.animal}})
+        await axios({method: 'delete', url:'/delete-fav', data:{animal: e.currentTarget.dataset.animal}})
     } catch(e){
         console.log(e);
     }
@@ -43,39 +43,35 @@ $deleteFav.on('click', 'button', async function(e){
 
 
 // adding a comment on Favpet and maybe pet
-$petComment.on('click', 'button', function(e){
+$petComment.on('click', 'button', async function(e){
     e.preventDefault();
     let pet_id=e.target.dataset.animal
-    let comment = $(`.data-${pet_id}`).find('.pet-textarea').val()
-        
+    let comment = $(`.data-${pet_id}`).find('.pet-textarea').val()    
     // call to backend to add a comment to database
-    let response =axios({method: 'post', url:`/comments/${pet_id}`, data:{animal: pet_id, comment:comment}})
-
+    try{
+        await axios({method: 'post', url:`/comments/${pet_id}`, data:{animal: pet_id, comment:comment}})
+    } catch(e){
+        console.log(e);
+    }
     // take comment and update the HTML page
-    let commentSection = $(`.pet-comment-${pet_id} h3`);
-    let newElem = $('<p>').text(comment);
-    commentSection.after(newElem);
+    let commentSection = $(`.pet-comment-${pet_id}`);
+    let newElem = $('<li>').text(comment);
+    commentSection.append(newElem);
     
     // clear entries
     $(`.data-${pet_id}`).find('.pet-textarea').val('')   
-    
-
-    console.log(comment)
-    console.log(response)
 })
 
 $searchStartBtn.on("click", function(e){
-    console.debug(`loader working?`, $searchStartBtn);
-    console.log(e)
-    $('.question-area').hide();
     $loader.show();  
-    
-    if ($('document').find('.match-result')){
-        $loader.hide();
-        $('.match-display-area').show();
-    }
+    $('.question-area').hide();   
 })
 
+$orgSearch.on('click', 'button', function(e){
+    console.log($orgSearch);
+    $loader.show();
+    $('.org-search-area').hide();
+})
 
 //============matched_pet=======//
 
@@ -101,7 +97,7 @@ async function handleClick(e){
 
     if(e.target.id =='matched-pet_btn-yes'){
         try{
-            let response =await axios({method: 'post', url:'/likes', data:{animal: lastItem.dataset.animal}})
+            await axios({method: 'post', url:'/likes', data:{animal: lastItem.dataset.animal}})
         }catch(e){
             console.log(e);
         }

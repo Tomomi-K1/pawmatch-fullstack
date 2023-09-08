@@ -66,9 +66,14 @@
 
 <!-- main content area =====this information switches-->
 <div class="container-fluid main-area">
-  <div class="row justify-content-md-center">
-    <div class="loader hidden">
-      <h1> Loading....</h1>
+  <div class="row justify-content-md-center top-margin-80px loader hidden">
+    <div class="loader-div">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
     </div>
   </div>
   {% for category, message in get_flashed_messages(with_categories=True) %}

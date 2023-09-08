@@ -113,8 +113,7 @@ class FavoritePet(db.Model):
     user_id =db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='cascade'),
-        nullable = False,
-        primary_key=True
+        nullable = False
     ) 
 
     pet_id = db.Column(
@@ -123,7 +122,7 @@ class FavoritePet(db.Model):
     )
 
     user = db.relationship('User', backref='favorite_pets')
-    
+        
     def __repr__(self):
         return f'<FavPets #{self.id} user:{self.user_id} pet_id:{self.pet_id} >'
 # =================================== Favorite Organization class ====================================#
@@ -169,20 +168,24 @@ class FavPetComment(db.Model):
         db.Integer,
         db.ForeignKey('users.id', ondelete='cascade'),
         nullable= False
-    )    
+    )  
 
-    pet_id = db.Column(
-        db.Integer
-    )
+    fav_pet_id = db.Column(
+        db.Integer,
+        db.ForeignKey('favorite_pets.id', ondelete='cascade'),
+        nullable= False
+    )  
 
     comment= db.Column(
         db.Text
     )
 
-    user = db.relationship('User', backref='fav_pet_comments')
+    user = db.relationship('User', backref='comments')
+
+    fav_pet = db.relationship('FavoritePet', backref='comments')
 
     def __repr__(self):
-        return f'<FavPetComments #{self.id} user:{self.user_id}, pet_id:{self.pet_id} comment:{self.comment}>'
+        return f'<FavPetComments #{self.id} user:{self.user_id}, pet_id:{self.fav_pet_id} comment:{self.comment}>'
 
 # =================================== Organization Comments class ====================================#
 class OrgComment(db.Model):

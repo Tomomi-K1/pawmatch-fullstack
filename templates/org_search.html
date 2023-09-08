@@ -8,21 +8,16 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-<div class="org-search-area p-5 p-5">
-    <div class="col">
+<div class="org-search-area p-5 p-5 row top-margin-80px justify-content-center">
+    <div class="col-md-7">
         <h2>Let's Find Adoption Organizations!</h2>
         <div class="mt-3">
-            <form class="form form-group org-search" action="/org-results">
-                
+            <form class="form form-group org-search-form" action="/org-results">
                 <label class="form-label" for="search-word">Search Organizations</label>
-          
                 <input class="form-control" type="text" name="q" id="search-word" placeholder="Search by State, City, Organization Name" >
-                <button class="btn btn-warning">Search</button>
+                <button type="submit" class="btn btn-warning">Search</button>
             </form>
         </div>
     </div>
-    
-
-
 </div>
 {% endblock %}

@@ -10,13 +10,14 @@
 {% block content %}
       <div class="users-pets-area p-5 p-5">
         <h2>Your Favorite Pets</h2>
-        <div class="liked-animal row">
+        <div class="liked-animal row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
           {% if not fav_pets %}
             <p>You have no Favorite pets</p>
           {% endif %}
           {% for animal in fav_pets %}
-          <div class="col-sm-2 col-md-3 col-lg-4 mb-3">
-            <div class="card users-pets_card data-{{animal['id']}} m-2">
+          <!-- <div class="col-sm-6 col-md-4 col-xl-3 mb-3"> -->
+          <div class="col mb-3">
+            <div class="card h-100 users-pets_card data-{{animal['id']}} m-2">
               
               {% if animal['photos'] %}
               <img src="{{animal['photos'][0]['medium']}}" class="card-img-top users-pets_card-img" alt="{{animal['species']}}" height="300">
@@ -24,7 +25,7 @@
               <img src="/static/images/default.jpg" class="card-img-top users-pets_card-img" alt="no picture" height="300">
               {% endif %}   
               
-              <div class="liked-pet card-body">
+              <div class="liked-pet card-body d-flex flex-column">
                 
                 <h3 class="card-title">{{animal['name']}}</h3>
                 <form class="form form-group users-pets_delete-form">
@@ -39,22 +40,22 @@
                    
                 </div>
 
-                <div class="pet-comment-{{animal['id']}}">
-                  <h3>Comments</h3>
+                <div class="pet-comment-div d-flex flex-column">
+                  <h5>Your Notes</h5>
+                  <ul class="pet-comment-{{animal['id']}}">
                     {% if comments %}
                       {% for comment in comments %}
-                        {% if comment.pet_id == animal['id'] %}
-                        <p class="{{comment.id}}">{{comment.comment}}</p>
+                        {% if comment.fav_pet.pet_id == animal['id'] %}
+                        <li class="{{comment.id}} comment">{{comment.comment}}</li>
                         {% endif %}
                       {% endfor %}
                     {% endif %}
-                    <form class="pet-comment form-group" method="POST">
-                      <div>
-                      {{ form.hidden_tag() }}
-                      {{ form.comment(class="pet-textarea") }}
-                      </div>
-                      <button class="btn btn-warning" data-animal="{{animal['id']}}"> add a comment </button>
-                    </form> 
+                  </ul>
+                  <form class="pet-comment form-group" method="POST">
+                    {{ form.hidden_tag() }}
+                    {{ form.comment(class="pet-textarea") }}
+                    <button class="btn btn-warning" data-animal="{{animal['id']}}"> Add a comment </button>
+                  </form> 
                 </div>
 
               </div>

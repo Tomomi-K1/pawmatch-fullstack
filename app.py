@@ -10,7 +10,7 @@ import os
 
 from models import db, connect_db, User, FavoritePet, FavoriteOrg, FavPetComment, OrgComment
 from forms import UserForm, LoginForm, UserPreferenceForm, CommentForm
-from config_info import API_KEY,API_SECRET, SECRET_KEY
+from config_info import API_KEY,API_SECRET, SECRET_KEY, DemoUsername, DemoPassword
 
 # create the app
 app = Flask(__name__)
@@ -65,12 +65,10 @@ def get_token():
         ACCESS_TOKEN = data['access_token']
         EXPIRES_IN = datetime.now() + timedelta(seconds=data['expires_in'])
         headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
-
+    print(ACCESS_TOKEN)
 # ==========================================================#
 
 CURR_USER_KEY = 'curr_user'
-pets_list= []
-orgs_list = []
 
 # ============================================================#
 #=== signup/login/logout g.user & Session assign handling ====#
@@ -150,6 +148,22 @@ def login():
 
     return render_template('login.html', form=form)
 
+# ============ LOG IN DemoUser  ======================#
+@app.route("/login/demo", methods=["GET"])
+def loginDemoUser():
+    """let Demo User login"""
+
+    user = User.authenticate(
+        username = DemoUsername,
+        password = DemoPassword
+    )
+
+    if user:
+        do_login(user)
+        return redirect("/questions")
+    else:
+        flash("Invalid credentials.", 'danger')
+
 # ============ LOG OUT User  ======================#
 @app.route('/logout')
 def logout():
@@ -212,6 +226,7 @@ def show_questions():
         flash("Access unauthorized.", "danger")
         return redirect("/home")
     
+    
     form = UserPreferenceForm()
 
     if form.validate_on_submit():
@@ -225,7 +240,7 @@ def show_questions():
                                         'gender': form.gender.data, 
                                         'age': form.age.data, 
                                         'location': form.zipcode.data, 
-                                        'limit': 50, 
+                                        'limit': 100, 
                                         'status': 'adoptable',
                                         'distance': 20})
             match_data = response.json()
@@ -235,9 +250,13 @@ def show_questions():
             flash('No Match Found. Please Try Again.', 'danger')
             return redirect('/questions')
 
+        user = User.query.get_or_404(g.user.id)  
+        print([pet.pet_id for pet in user.favorite_pets])  
         # remove animals without pictures
         for animal in list_of_animals:
             if len(animal['photos']) == 0:
+                list_of_animals.remove(animal)
+            if(animal['id'] in [pet.pet_id for pet in user.favorite_pets]):
                 list_of_animals.remove(animal)
         
         if len(list_of_animals) == 0 :
@@ -316,6 +335,7 @@ def user_page(user_id):
             db.session.commit()
 
     comments = FavPetComment.query.filter_by(user_id = g.user.id)
+    print(user.comments)
 
 
     return render_template('users_pets.html', user=user, fav_pets=fav_pets, comments = comments, form=form)
@@ -331,7 +351,7 @@ def delete_fav():
         'message': f'received:{received_data}'
     }
 
-    FavoritePet.query.filter_by(pet_id=received_data['animal']).delete()
+    FavoritePet.query.filter(FavoritePet.pet_id == received_data['animal'], FavoritePet.user_id == g.user.id).delete()
     db.session.commit()
 
     return flask.Response(response=json.dumps(return_data), status=201)
@@ -345,9 +365,13 @@ def add_pet_comments(pet_id):
         'message': f'received:pet_id {received_data["animal"]}, comment:{received_data["comment"]}'
     }
 
+    favorite_pet = FavoritePet.query.filter(FavoritePet.pet_id == pet_id, FavoritePet.user_id == g.user.id).one()
+    
+    print(favorite_pet)
+    
     comment = FavPetComment(
         user_id=g.user.id,
-        pet_id =pet_id,
+        fav_pet_id=favorite_pet.id,
         comment=received_data['comment']
     )
 
@@ -366,14 +390,11 @@ def show_search_page():
 @app.route('/org-results', methods=['GET'])
 def org_search_result():
     get_token()
-    orgs_list = []
 
     user_query = request.args.get('q')
     response = requests.get(f'{API_BASE_URL}/organizations', headers=headers, params={'query': user_query})
     data = response.json()
     orgs = data['organizations']
-    
-    orgs_list =[{'id': org['id'], 'name': org['name'], 'phone': org['phone'], 'city': org['address']['city'], 'state': org['address']['state'], 'url': org['url'], 'img_url': org['photos'][0]['small'] if len(org['photos']) != 0 else "None" } for org in orgs]
     
     return render_template('org_results.html', user_query=user_query, orgs_list=orgs)
     
