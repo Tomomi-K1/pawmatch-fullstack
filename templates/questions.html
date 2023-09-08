@@ -8,19 +8,16 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-<div class="question-area row justify-content-md-center p-2 mt-5">
+<main class="question-area row justify-content-md-center p-2 mt-5">
     <div class="col-md-7 ">
       <div class="card p-4">
         <div class="d-flex justify-content-center p-2">
           <img src="../static/images/dog-seating.png" alt="" width="10%" height="10%">
-          <!-- <h4 class="p-2">QUESTIONS</h4> -->
           <img src="../static/images/animal.png" alt="" width="10%" height="10%">
         </div>
       <form method="POST" id="questions">
         {{ form.hidden_tag() }}
-  
         {% for field in form if field.widget.input_type != 'hidden' %}
-        <!-- even though I applied from-group margin bottom was not applied why? I tried adding m-b-1 which means margin bottom  -->
         <div class="form-group">
           {% for error in field.errors %}
             <span class="text-danger">{{ error }}</span>
@@ -29,18 +26,15 @@
           {{ field(placeholder=field.label.text, class="form-control form-select") }}
         </div>
         {% endfor %}
-        <!-- do you want to save your preference? 
-          yes ====add it to preference name with name
-          no ===== do not add on backend-->
         <button class="btn btn-warning btn-block search-start">Next</button>
       </form>
       </div>
     </div>
-  </div>
+  </main>
 
 {% endblock %}
 
-<!-- put attribution for icon
+<!-- attribution for icon
 <a href="https://www.flaticon.com/free-icons/pet" title="pet icons">Pet icons created by Boris farias - Flaticon</a> 
 <a href="https://www.flaticon.com/free-icons/pet" title="pet icons">Pet icons created by Freepik - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/paw" title="paw icons">Paw icons created by logisstudio - Flaticon</a>

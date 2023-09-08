@@ -8,38 +8,32 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-<div class="match-display-area row justify-content-md-center">
+<main class="match-display-area row justify-content-md-center">
   <h2 class="matched-pet_h2"> Do you want to adopt?</h2>
   <div class="col-md-7 col-xl-6 col-xxl-5 matched-card-area mt-2">
     <div id="matched-pet_outline" data-user={{g.user.id}}>
     {% for animal in list_of_animals %}
-    
-    
-        <div class="matched-pet_outer" data-animal="{{animal['id']}}">
-
-            {% if animal['photos'] %}
-            <img src="{{animal['photos'][0]['large']}}" class="matched-pet_img" alt="{{animal['species']}}">
-            {% else %}
-            <img src="../static/images/default.jpg" class="matched-pet_img" alt="no picture">
-            {% endif %}   
-            <div class="matched-pet_div-p">
-                <h6>{{animal['name']}}</h6>
-                <div>
-                  <p class="matched-pet_p"><i class="fa-solid fa-location-dot" style="color: #ffffff;"></i> {{animal['contact']['address']['city']}}</p>
-                </div>
+      <div class="matched-pet_outer" data-animal="{{animal['id']}}">
+        {% if animal['photos'] %}
+        <img src="{{animal['photos'][0]['large']}}" class="matched-pet_img" alt="{{animal['species']}}">
+        {% else %}
+        <img src="../static/images/default.jpg" class="matched-pet_img" alt="no picture">
+        {% endif %}   
+        <div class="matched-pet_div-p">
+            <h6>{{animal['name']}}</h6>
+            <div>
+              <p class="matched-pet_p"><i class="fa-solid fa-location-dot" style="color: #ffffff;"></i> {{animal['contact']['address']['city']}}</p>
             </div>
         </div>
-  
-    
+      </div>
     {% endfor %}
     </div>
-    
   </div>
   <div class="container d-flex justify-content-center" >
     <button class="btn btn-secondary m-2" id="matched-pet_btn-no">No</button>
     <button class="btn btn-secondary m-2" id="matched-pet_btn-yes">yes</button>
   </div>
-</div>
+</main>
    
 
     

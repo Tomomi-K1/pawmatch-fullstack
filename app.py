@@ -10,20 +10,20 @@ import os
 
 from models import db, connect_db, User, FavoritePet, FavoriteOrg, FavPetComment, OrgComment
 from forms import UserForm, LoginForm, UserPreferenceForm, CommentForm
-# from config_info import API_KEY,API_SECRET, SECRET_KEY, DemoUsername, DemoPassword
+from config_info import API_KEY,API_SECRET, SECRET_KEY, DemoUsername, DemoPassword
 
 # create the app
 app = Flask(__name__)
 CORS(app)
 
 # configure the postgresql database, relative to the app instance folder
-# app.config['SECRET_KEY'] = SECRET_KEY
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///furmily_db'
+app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///furmily_db'
 
 ##########use below for deployment ###########################
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL')
+# app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+#     'DATABASE_URL')
 #########################################################
 
 
@@ -37,10 +37,10 @@ connect_db(app)
 # ============ API call requirements ======================#
 ##########use below for diployment ###########################
 # needed to have this to store API key and secret on Heroku side rather than importing from config_info.py. Since config_info.py is in .gitignore to avoid secret being uploaded in github.
-API_KEY=os.environ.get('API_KEY') 
-API_SECRET=os.environ.get('API_SECRET') 
-DemoUsername=os.environ.get('DemoUsername') 
-DemoPassword=os.environ.get('DemoPassword') 
+# API_KEY=os.environ.get('API_KEY') 
+# API_SECRET=os.environ.get('API_SECRET') 
+# DemoUsername=os.environ.get('DemoUsername') 
+# DemoPassword=os.environ.get('DemoPassword') 
 
 #########################################################
 
@@ -51,9 +51,14 @@ API_BASE_URL = 'https://api.petfinder.com/v2'
 ACCESS_TOKEN = None
 EXPIRES_IN = None
 headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
+CURR_USER_KEY = 'curr_user'
 
 def get_token():
-    # if I want to reassign global variable, we need use keyword "global"
+    """
+    ACCESS_TOKEN expires in 60mins.
+    This function checks if TOKEN is expired or not.
+    If Expired then request new one from PetFinder API.
+    """
     global ACCESS_TOKEN 
     global EXPIRES_IN
     global headers 
@@ -69,35 +74,31 @@ def get_token():
         EXPIRES_IN = datetime.now() + timedelta(seconds=data['expires_in'])
         headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
     print(ACCESS_TOKEN)
-# ==========================================================#
-
-CURR_USER_KEY = 'curr_user'
 
 # ============================================================#
 #=== signup/login/logout g.user & Session assign handling ====#
 # ============================================================#
-# this will run before every request."before_request" =Register a function to run before each request.
+
 @app.before_request
 def add_user_to_g():
-    """If we're logged in, add curr user to Flask global."""
-
+    """
+    If we're logged in, add curr user to Flask global.
+    g is an object for storing data during the application context of a running Flask web app. By adding the user to g, we can use user info anywhere.
+    """
     if CURR_USER_KEY in session:
         g.user = User.query.get(session[CURR_USER_KEY])
-        # g is an object for storing data during the application context of a running Flask web app. By adding the user to g, we can use user info anywhere.
-
     else:
-        g.user = None
-    
+        g.user = None 
 
 def do_login(user):
-    """Log in user."""
-    # user is put in session
+    """
+    Log in user.
+    user is put in session
+    """
     session[CURR_USER_KEY] = user.id
-
 
 def do_logout():
     """Logout user."""
-
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
@@ -107,12 +108,10 @@ def signup():
     """
     Handle user signup.Create new user and add to DB. Redirect to home page.If form not valid, present form. If the there already is a user with that username: flash message
     and re-present form.
+    do_logout() is making sure no one is logged in before signup
     """
-    # make sure no one is logged in before signup
     do_logout()
-
     form = UserForm()
-
     if form.validate_on_submit():
         try:
             user =User.signup(
@@ -126,15 +125,16 @@ def signup():
         except IntegrityError:
             flash("Username already taken", 'danger')
             return render_template('signup.html', form=form)     
-
     else:
         return render_template('signup.html', form=form)
 
 # ============ LOG IN User  ======================#
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """user login page"""
-    
+    """
+    Show user login page.
+    Validate login info and redirect accordingly.
+    """   
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -142,7 +142,6 @@ def login():
             username=form.username.data,
             password=form.password.data
         )
-
         if user:
             do_login(user)
             return redirect("/questions")
@@ -160,7 +159,6 @@ def loginDemoUser():
         username = DemoUsername,
         password = DemoPassword
     )
-
     if user:
         do_login(user)
         return redirect("/questions")
@@ -179,7 +177,10 @@ def logout():
 # ============ Update User Info ======================#
 @app.route('/users/profile/<int:user_id>', methods=['GET', 'POST'])
 def show_edit_user(user_id):
-    
+    """
+    Show profile edit form.
+    Validate and updated profile information and add it to db.
+    """
     if not g.user or g.user.id != user_id:
         flash('Please log in')
         return redirect('/login')
@@ -204,31 +205,33 @@ def show_edit_user(user_id):
 
 @app.route("/")
 def root():
-    """Homepage"""
+    """Show Homepage"""
     return redirect('/home')
 
 @app.route('/home')
 def home():
     """
-    #===== show adoptable pet available, but need to think of way to count all available animals since API show only up to 100. 
-    # res = requests.get(f'{API_BASE_URL}/animals', headers=headers, params={'status': 'adoptable'})
-    # data=res.json()
-    # num =len(data['animals'])
+    Show questions page if user is logged in.
+    If not logged in, then redirect to homepage.
     """
     if g.user:
         return redirect('/questions')
-    
     return render_template('home.html')
 
 
 #============= Get user's preference and show result ======================= 
 @app.route('/questions', methods=["GET", "POST"])
 def show_questions():
-    """Questions to a user to find pets and show list of matching pets"""
+    """
+    Show questions to a user to find pets.
+    Show matching pets by :
+        -randomly selecting 10 pets
+        -excluding pets that's already in user's favorite
+        -excluding pets without pictures
+    """
     if not g.user:
         flash("Access unauthorized.", "danger")
-        return redirect("/home")
-    
+        return redirect("/home")    
     
     form = UserPreferenceForm()
 
@@ -276,7 +279,9 @@ def show_questions():
 # =============adding pets to Favorite========================
 @app.route('/likes', methods=['POST'])
 def add_fav():
-
+    """
+    Handle adding a pet to a user's favorite
+    """
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/home")
@@ -289,17 +294,13 @@ def add_fav():
 
     user = User.query.get_or_404(g.user.id)
     favorites = user.favorite_pets
-    # all_fav=FavoritePet.query.all()# get users fav pet, if aleady exist, don't add no action
     if FavoritePet.query.filter_by(pet_id=received_data['animal']).first() in favorites:
         return_data = {
         'status':'already in database',
         'message': f'received:{received_data["animal"]}'
         }
-        
         return flask.Response(response=json.dumps(return_data), status=201)
-         
     else:
-        
         favPet = FavoritePet(
         pet_id = received_data['animal'],
         user_id = g.user.id)
@@ -312,8 +313,9 @@ def add_fav():
 # ================ Show all Fav pets =================================
 @app.route('/pets/users/<int:user_id>')
 def user_page(user_id):
-    """show user profile including preference, favorite pets saved""" 
-
+    """
+    Show list of user's favorite pets
+    """ 
     if not g.user or g.user.id != user_id:
         flash('Please log in', "danger")
         return redirect('/home')
@@ -338,15 +340,15 @@ def user_page(user_id):
             db.session.commit()
 
     comments = FavPetComment.query.filter_by(user_id = g.user.id)
-    print(user.comments)
-
 
     return render_template('users_pets.html', user=user, fav_pets=fav_pets, comments = comments, form=form)
-
 
 # ============= DELETE user's favorite pet===========================
 @app.route('/delete-fav', methods=['DELETE'])
 def delete_fav():
+    """
+    Delete a favorite pet from user's favorite pets
+    """
     received_data=request.get_json()
     print(f'received:{received_data}')
     return_data = {
@@ -362,6 +364,9 @@ def delete_fav():
 # ================add user comments of a pet to DB ===========================
 @app.route('/comments/<int:pet_id>', methods=['POST'])
 def add_pet_comments(pet_id):
+    """
+    Handle adding user's comment on a pet
+    """
     received_data=request.get_json()
     return_data = {
         'status':'successful',
@@ -369,8 +374,6 @@ def add_pet_comments(pet_id):
     }
 
     favorite_pet = FavoritePet.query.filter(FavoritePet.pet_id == pet_id, FavoritePet.user_id == g.user.id).one()
-    
-    print(favorite_pet)
     
     comment = FavPetComment(
         user_id=g.user.id,
@@ -383,15 +386,19 @@ def add_pet_comments(pet_id):
 
     return flask.Response(response=json.dumps(return_data), status=201)
 
-
 # ==============org search ==============================
 @app.route('/org-search', methods=['GET'])
 def show_search_page():
-    
+    """
+    Show organization search form
+    """
     return render_template('org_search.html')
 
 @app.route('/org-results', methods=['GET'])
 def org_search_result():
+    """
+    Show search result of matched organizations
+    """
     get_token()
 
     user_query = request.args.get('q')

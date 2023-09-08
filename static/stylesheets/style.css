@@ -54,12 +54,6 @@ footer a:hover{
   overflow: hidden;
 }
 
-/* .wide-card{
-  width: 100%;
-} */
-
-  /*Photo by <a href="https://unsplash.com/@victor_vector?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Victor Grabarczyk</a> on <a href="https://unsplash.com/photos/N04FIfHhv_k?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-  */
 /* =====home.html ====== */
   
 .home-container{
@@ -105,11 +99,12 @@ footer a:hover{
 }
 
 .home-footer{
+  padding: 10px;
   background-color:#402B03 ;
   width: 100%;
-  height: 40px;
   text-align: center;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -120,10 +115,7 @@ footer a:hover{
 }
 
 @media only screen and (min-width: 768px) {
-  /* .home-container{
-    width: 100%;
-    height:90vh;
-  } */
+
   .home-hero-h1{
       font-size: 1.5rem;
   }
@@ -134,10 +126,7 @@ footer a:hover{
 
 
 @media only screen and (min-width: 992px) {
-    /* .home-container{
-      width: 100%;
-      height:100svh;
-    } */
+
     .home-hero-h1{
       font-size: 1.8rem;
     }
@@ -156,7 +145,6 @@ footer a:hover{
     max-width: 800px;
   }
 }
-
 
 /* ===== Matched_pet.html ====== */
 .matched-pet_h2{
@@ -267,7 +255,6 @@ textarea{
   border: 1px solid rgba(176,176,176,0.5);
 }
 
-
 /* ============org_results ================= */
 .org-search-area a {
   text-decoration: none;
@@ -342,8 +329,3 @@ div:nth-child(5){
 div:nth-child(6){
   animation-delay: 1.2s;
 }
-
-
-
-/* <a href="https://www.flaticon.com/free-icons/location" title="location icons">Location icons created by Freepik - Flaticon</a>
-location font */

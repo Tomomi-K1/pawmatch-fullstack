@@ -8,7 +8,7 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-<div class="org-search-area p-5 p-5">
+<main class="org-search-area p-5 p-5">
   <h2>Organization Search Result</h2>
   <p>Search Word: {{user_query}}</p>
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
@@ -24,7 +24,6 @@
           {% else %}
             <img src="/static/images/default.jpg" class="img-fluid card-img-top" alt="no picture" height="300", width="300">
           {% endif %}
-      
           <div class="card-body org-card-body">
             <h5 class="card-title p-2">
               <a class="org-results-" href="{{org['url']}}">{{org['name']}}</a>
@@ -39,6 +38,6 @@
       </div>  
     {% endfor %}
   </div>
-</div>  
+</main>  
          
 {% endblock %}

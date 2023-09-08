@@ -8,7 +8,7 @@
 
 {# ======= main content area ======== #}
 {% block content %}
-<div class="row justify-content-md-center wide-card p-5 mt-5">
+<main class="row justify-content-md-center wide-card p-5 mt-5">
     <div class="col-md-7">
       <div class="card p-4">
         {% if g.user.username =='testuser' %}
@@ -16,7 +16,6 @@
           <p>Sorry, you cannot edit Demo User's info</p>
           <form method="POST" action="/users/profile/{{user.id}}" id="user-{{g.user.id}}" class="update-form">
             {{ form.hidden_tag() }}
-
             {% for field in form if field.widget.input_type != 'hidden' %}
             <div class="form-group">  
               {{field.label}}
@@ -26,16 +25,13 @@
               {% endfor %}
             </div>
             {% endfor %}
-      
             <button class="btn btn-warning btn-block">Update</button>
           </form>
-          
         {% else %}
           <h1>Your Info</h1>
           <p>if you want to update your info, simply edit below and click Update.</p>
           <form method="POST" action="/users/profile/{{user.id}}" id="user-{{g.user.id}}" class="update-form">
             {{ form.hidden_tag() }}
-
             {% for field in form if field.widget.input_type != 'hidden' %}
             <div class="form-group">
               {{field.label}}
@@ -45,13 +41,12 @@
               {% endfor %}
             </div>
             {% endfor %}
-      
             <button class="btn btn-warning btn-block">Update</button>
           </form>
           {% endif %}
       </div>
     </div>
-  </div>
+  </main>
 
 
 {% endblock %}

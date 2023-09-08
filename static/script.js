@@ -1,25 +1,9 @@
 const $readyBtn =$('.ready-btn');
 const $loader =$('.loader');
-
-
-const $matchDisplayArea =$('.match-display-area');
-const $matchedPet = $('.matched-pet');
-const $nextBtn = $('.nextbtn');
-
-// =========== match_result.html========
-
-const $favBtn = $('.favorite');
-const $maybeBtn = $('.maybe');
-const $noBtn = $('.no');
-const $formUserLikes = $('.form-user-likes');
-const $formUserMaybe = $('.form-user-maybe');
-const $formUserNo = $('.form-user-no');
-const $showMyPetBtn = $('.show-my-pets')
-
+const $nav = $('.nav');
 
 // =========== users_pets.html==============
 const $deleteFav = $('.users-pets_delete-form');
-const $deleteMaybe = $('.delete-maybe-form');
 const $petComment = $('.pet-comment');
 
 // =========questions.html===================
@@ -31,7 +15,20 @@ const $orgSearch = $('.org-search-form');
 // ==========org_results.html==============
 const $orgComment = $('.org-comment');
 
-$deleteFav.on('click', 'button', async function(e){
+function showLoaderHideContent(){
+    $('main').hide();
+    $('footer').hide();
+    $loader.show();
+}
+
+$nav.on('click', 'a', showLoaderHideContent);
+$searchStartBtn.on("click", showLoaderHideContent)
+$orgSearch.on('click', 'button', showLoaderHideContent)
+
+// ========== handle delete from favorite =====================///
+$deleteFav.on('click', 'button', deleteFav);
+
+async function deleteFav(e){
     e.preventDefault();
     try{
         await axios({method: 'delete', url:'/delete-fav', data:{animal: e.currentTarget.dataset.animal}})
@@ -39,17 +36,22 @@ $deleteFav.on('click', 'button', async function(e){
         console.log(e);
     }
     $('.data-'+ e.currentTarget.dataset.animal).parent().remove() 
-})
+}
 
+// ============handle adding comments =================//
+$petComment.on('click', 'button', addComment)
 
-// adding a comment on Favpet and maybe pet
-$petComment.on('click', 'button', async function(e){
+async function addComment(e){
     e.preventDefault();
     let pet_id=e.target.dataset.animal
     let comment = $(`.data-${pet_id}`).find('.pet-textarea').val()    
     // call to backend to add a comment to database
     try{
-        await axios({method: 'post', url:`/comments/${pet_id}`, data:{animal: pet_id, comment:comment}})
+        await axios({
+            method: 'post', 
+            url:`/comments/${pet_id}`, 
+            data:{animal: pet_id, comment:comment}
+            })
     } catch(e){
         console.log(e);
     }
@@ -60,18 +62,7 @@ $petComment.on('click', 'button', async function(e){
     
     // clear entries
     $(`.data-${pet_id}`).find('.pet-textarea').val('')   
-})
-
-$searchStartBtn.on("click", function(e){
-    $loader.show();  
-    $('.question-area').hide();   
-})
-
-$orgSearch.on('click', 'button', function(e){
-    console.log($orgSearch);
-    $loader.show();
-    $('.org-search-area').hide();
-})
+}
 
 //============matched_pet=======//
 
@@ -89,8 +80,7 @@ async function handleClick(e){
     setTimeout(()=>{
         lastItem.remove(); 
         if(container.children.length === 0){
-            $matchDisplayArea.hide();
-            $loader.show();
+            showLoaderHideContent();
             document.location.href =`/pets/users/${userId}`
         }        
     }, 800);
