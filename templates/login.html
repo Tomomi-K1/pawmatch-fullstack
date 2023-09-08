@@ -10,24 +10,28 @@
 {% block content %}
 <div class="row justify-content-md-center wide-card p-5 mt-5">
     <div class="col-md-7 col-lg-5">
-      <h2 class="login-message">Let's check you back in!</h2>
-      <form method="POST" id="login_form">
-        {{ form.hidden_tag() }}
-  
-        {% for field in form if field.widget.input_type != 'hidden' %}
-        <!-- even though I applied from-group margin bottom was not applied why? I tried adding m-b-1 which means margin bottom  -->
-        <div class="form-group">
-          {% for error in field.errors %}
-            <span class="text-danger">{{ error }}</span>
+      <div class="card p-4">
+        <h2 class="login-message">Let's check you back in!</h2>
+        <form method="POST" id="login_form">
+          {{ form.hidden_tag() }}
+    
+          {% for field in form if field.widget.input_type != 'hidden' %}
+          <!-- even though I applied from-group margin bottom was not applied why? I tried adding m-b-1 which means margin bottom  -->
+          <div class="form-group">
+            {% for error in field.errors %}
+              <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+            {{field.label}}
+            {{ field(placeholder=field.label.text, class="form-control") }}
+          </div>
           {% endfor %}
-          {{field.label}}
-          {{ field(placeholder=field.label.text, class="form-control") }}
-        </div>
-        {% endfor %}
-  
-        <button class="btn btn-warning btn-block">Log in</button>
-        <button type="submit" formaction="/login/demo" method="post" class="demo-login ready-btn btn btn-primary">Demo User</button>
-      </form>
+    
+          <button type="submit" class="btn btn-warning btn-block">Log in</button>
+        </form>
+        <form>
+          <button type="submit" formaction="/login/demo" method="GET" class="demo-login ready-btn btn btn-primary">Demo User</button>
+        </form> 
+      </div> 
     </div>
   </div>
 

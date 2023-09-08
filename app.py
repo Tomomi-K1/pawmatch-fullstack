@@ -10,20 +10,20 @@ import os
 
 from models import db, connect_db, User, FavoritePet, FavoriteOrg, FavPetComment, OrgComment
 from forms import UserForm, LoginForm, UserPreferenceForm, CommentForm
-from config_info import API_KEY,API_SECRET, SECRET_KEY, DemoUsername, DemoPassword
+# from config_info import API_KEY,API_SECRET, SECRET_KEY, DemoUsername, DemoPassword
 
 # create the app
 app = Flask(__name__)
 CORS(app)
 
 # configure the postgresql database, relative to the app instance folder
-app.config['SECRET_KEY'] = SECRET_KEY
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///furmily_db'
+# app.config['SECRET_KEY'] = SECRET_KEY
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///furmily_db'
 
 ##########use below for deployment ###########################
-# app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'SECRET_KEY')
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-#     'DATABASE_URL', 'postgresql:///furmily_db')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL')
 #########################################################
 
 
@@ -37,8 +37,11 @@ connect_db(app)
 # ============ API call requirements ======================#
 ##########use below for diployment ###########################
 # needed to have this to store API key and secret on Heroku side rather than importing from config_info.py. Since config_info.py is in .gitignore to avoid secret being uploaded in github.
-# API_KEY=os.environ.get('API_KEY', 'default_api_key') 
-# API_SECRET=os.environ.get('API_SECRET', 'default_api_secret') 
+API_KEY=os.environ.get('API_KEY') 
+API_SECRET=os.environ.get('API_SECRET') 
+DemoUsername=os.environ.get('DemoUsername') 
+DemoPassword=os.environ.get('DemoPassword') 
+
 #########################################################
 
 # =========================================================#
