@@ -31,7 +31,11 @@ $deleteFav.on('click', 'button', deleteFav);
 async function deleteFav(e){
     e.preventDefault();
     try{
-        await axios({method: 'delete', url:'/delete-fav', data:{animal: e.currentTarget.dataset.animal}})
+        await axios({
+            method: 'delete', 
+            url:'/delete-fav', 
+            data:{animal: e.currentTarget.dataset.animal}
+        })
     } catch(e){
         console.log(e);
     }
@@ -51,7 +55,7 @@ async function addComment(e){
             method: 'post', 
             url:`/comments/${pet_id}`, 
             data:{animal: pet_id, comment:comment}
-            })
+        })
     } catch(e){
         console.log(e);
     }

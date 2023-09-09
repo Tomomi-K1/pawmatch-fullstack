@@ -1,56 +1,60 @@
 # Find Your Furmily - Paw Match
+Live demo: [Paw Match](https://find-your-furmily-paw-match.onrender.com)
+![image](./static/images/homepage-paw-match.jpg)
+![image](./static/images/matched-pet.jpg)
+![image](./static/images/favorite-pets.jpg)
+# Features
 
-Access deployed app from here: **[Paw Match](https://paw-match.herokuapp.com/)** 
-Due to Heroku not offering the free tier anymore, I am getting ready to upload this with render.com.
+- Responsive website
+- Search pet rescue organizations
+- Search and add pets to favorite
+  - App will suggest 10 or less possible pets according to a user's preference
+  - A User can select yes to add a pet to their favorite pet list
+  - Show a user's favorite pet list
 
-#### 1. Goal
+# Built with
+- Database: PostgreSQL
+- Backend: Flask, Flask-SQLalchemy, Python
+- frontend: Jinja, Bootstrap, JQuery
+- API : [Petfinder API](https://www.petfinder.com/developers/v2/docs/).
 
-This website will give a series of questions to narrow down the search for a potential pet from rescue organizations.
+# Setup
+#### Setting up database on postgreSQL 
+1. start your postgreSQL server and enter your password.
+   ```bash
+   $sudo service postgresql start
+   ```
+   
+2. Create database in postgreSQL(`furmily_db` is the database name)
+   ```bash
+   $createdb furmily_db
+   ```
+3. make sure you are in the root of this project folder where `seed.py` is saved.
 
-#### 2. Type of users 
+4. Create tables by using existing `seed.py` file. 
+    ```bash
+    $python3 seed.py
+    ```
 
-Anyone who is looking to adopt a pet. It is important to make this website easy to navigate so anyone can find their future pet easily.
+#### Starting Flask app on your local computer
+0. Make sure to replace environment variables  `API_KEY`,`API_SECRET`, `SECRET_KEY`, `DemoUsername`, `DemoPassword`) with your own. You can import them from separate file. Also, make sure to comment out environment variables set up for deployment.
+   
+1. Navigate to the project folder
+2. Create Virtual Environment
+    ```bash
+    $python3 -m venv venv
+    ```
+3. Open Virtual Environment. You will see `(venv)` appear in front of `$`
+    ```bash
+    $source venv/bin/activate
+    ```
+4. install dependencies
+    ```bash
+    $pip3 install -r requirements.txt
+    ```
+5. Run application
+    ```bash
+    $flask run
+    ```
 
-#### 3. API 
-
-**[Petfinder API](https://www.petfinder.com/developers/v2/docs/)**
-This API will provide detailed pet and organization information.
-
-
-#### 4. Database schema
-
-- User table -user’s information with password
-- User’s preference table - store user’s pet preferences
-- User comments table -store users comment on pets and organizations
-- Favorite pet table - store user’s favorite pets
-- Favorite organization table -store user’s favorite organization
-
-
-#### 5. Possible Issues with API 
-
-API could be unavailable	
-
-#### 6. Sensitive information that needs to be secured
-
-Password, username, and email.
-
-#### 7. Functionality
-
-- Ask a series of questions to find out the user's preference for a pet.
-- Rather than a showing list of pets, this website will show a randomly chosen pet one by one up to 10 animals.
-- A User will choose yes, no on the pet shown. 
-- Website will create a list of animals with “yes”
-- Users can edit the lists and add comments to each pet. 
-
-#### 8. User flow 
-
-1. Show questions for a user to answer to find an ideal pet
-2. Shows first matched pet information -> user will choose “yes”, “no”, “maybe”. Depending on a user’s answer, the pet will be added to “yes” list and “maybe” list. A user will repeat this 10 times.
-3. Last page will show “Yes List”, “Maybe List” (potentially show the map of pets locations)
-4. Inside those lists, a user can click on each pet to find more details and leave any thoughts or comments.
-	
-#### 9. What features make my site more than CRUD? Stretch goals?
-
-More than CRUD : having a logic behind to choose random 10 pets for users
-Stretch goal: potentially show the map of pets or shelter locations
 
