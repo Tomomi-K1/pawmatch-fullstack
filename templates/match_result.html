@@ -14,10 +14,16 @@
     <div id="matched-pet_outline" data-user={{g.user.id}}>
     {% for animal in list_of_animals %}
       <div class="matched-pet_outer" data-animal="{{animal['id']}}">
-        {% if animal['photos'] %}
-        <img src="{{animal['photos'][0]['large']}}" class="matched-pet_img" alt="{{animal['species']}}">
-        {% else %}
-        <img src="../static/images/default.jpg" class="matched-pet_img" alt="no picture">
+        {% if animal['photos'][0]['large'] %}
+          <img src="{{animal['photos'][0]['large']}}" class="matched-pet_img" alt="{{animal['species']}}">
+        {% elif animal['photos'][0]['medium'] %}
+          <img src="{{animal['photos'][0]['medium']}}" class="matched-pet_img" alt="{{animal['species']}}">
+        {% elif animal['photos'][0]['small'] %}
+          <img src="{{animal['photos'][0]['small']}}" class="matched-pet_img" alt="{{animal['species']}}">
+        {% elif animal['photos'][0]['full'] %}  
+          <img src="{{animal['photos'][0]['full']}}" class="matched-pet_img" alt="{{animal['species']}}">
+        {% else %} 
+          <img src="../static/images/default.jpg" class="matched-pet_img" alt="no picture">
         {% endif %}   
         <div class="matched-pet_div-p">
             <h6>{{animal['name']}}</h6>
