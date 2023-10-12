@@ -164,6 +164,7 @@ def loginDemoUser():
         return redirect("/questions")
     else:
         flash("Invalid credentials.", 'danger')
+        return redirect('/home')
 
 # ============ LOG OUT User  ======================#
 @app.route('/logout')

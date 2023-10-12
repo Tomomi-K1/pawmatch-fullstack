@@ -14,7 +14,7 @@
         {% if g.user.username =='testuser' %}
           <h1>Your Info</h1>
           <p>Sorry, you cannot edit Demo User's info</p>
-          <form method="POST" action="/users/profile/{{user.id}}" id="user-{{g.user.id}}" class="update-form">
+          <form class="update-form">
             {{ form.hidden_tag() }}
             {% for field in form if field.widget.input_type != 'hidden' %}
             <div class="form-group">  
@@ -25,7 +25,6 @@
               {% endfor %}
             </div>
             {% endfor %}
-            <button class="btn btn-warning btn-block">Update</button>
           </form>
         {% else %}
           <h1>Your Info</h1>
