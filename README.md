@@ -1,5 +1,4 @@
 # Find Your Furmily - Paw Match
-Live demo: [Paw Match](https://find-your-furmily-paw-match.onrender.com)
 ![image](./static/images/homepage-paw-match.jpg)
 ![image](./static/images/matched-pet.jpg)
 ![image](./static/images/favorite-pets.jpg)
